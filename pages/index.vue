@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header>
-      
+
     </Header>
   </div>
 </template>
@@ -10,6 +10,4 @@
 
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -578,6 +578,15 @@ model oc_option_value_description {
   @@id([option_value_id, language_id])
 }
 
+model nx_menu {
+  nx_menu_id         Int     @id @default(autoincrement())
+  nx_menu_href       String  @db.VarChar(255)
+  nx_menu_name       String  @db.VarChar(255)
+  nx_menu_isExternal Boolean @default(false)
+  nx_menu_isParent   Boolean @default(false)
+  nx_parent_id       Int?
+}
+
 model oc_order {
   order_id                Int      @id @default(autoincrement())
   invoice_no              Int      @default(0)

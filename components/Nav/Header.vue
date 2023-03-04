@@ -1,18 +1,24 @@
 <template>
   <div>
     <ul class="flex items-center relative">
-      <li v-for="item in menu" :class="item.children ? 'parent' : ''">
-        <a :href="item.link.href" :target="item.link.isExternal ? '_blank' : '_self'" class="py-2 px-4">
-          {{ item.link.name }}</a>
-        <Icon name="uil:angle-down" v-if="item.children" />
-        <div class="menulevel2 children hidden absolute left-0 top-full p-4" v-if="item.children">
+      <!-- <li v-for="item in dataMenu" :class="item.nx_menu_isParent ? 'parent' : ''">
+        <a :href="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'" class="py-2 px-4">
+          {{ item.nx_menu_name }}</a>
+        <Icon name="uil:angle-down" v-if="item.nx_menu_children" />
+        <div class="menulevel2 children hidden absolute left-0 top-full p-4" v-if="item.nx_menu_children">
           <ul>
-            <li v-for="subitem in item.children">
-              <a :href="subitem.link.href" :target="subitem.link.isExternal ? '_blank' : '_self'">{{ subitem.link.name
+            <li v-for="subitem in item.nx_menu_children">
+              <a :href="subitem.nx_submenu_href" :target="subitem.nx_submenu_isExternal ? '_blank' : '_self'">{{
+                subitem.nx_submenu_name
               }}</a>
             </li>
           </ul>
         </div>
+      </li> -->
+
+      <li v-for="item in dataMenu">
+        <a :href="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'" class="py-2 px-4">
+          {{ item.nx_menu_name }}</a>
       </li>
 
     </ul>
@@ -20,18 +26,21 @@
 </template>
 
 <script setup lang="ts">
+const { data: dataMenu } = await useFetch('/api/menu')
+
+/* 
 type Ilink = {
-  href: string,
-  name: string,
-  isExternal?: 0 | 1
+  nx_menu_href: string,
+  nx_menu_name: string,
+  nx_menu_isExternal?: 0 | 1
 }
 type IMenu = {
   link: Ilink,
   children?: Array<IMenu>
 }
+ */
 
-
-
+/* 
 const menu: IMenu[] = [
   {
     link: {
@@ -109,7 +118,7 @@ const menu: IMenu[] = [
       isExternal: 1
     },
   }
-]
+] */
 
 </script>
 
