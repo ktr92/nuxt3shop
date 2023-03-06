@@ -579,12 +579,16 @@ model oc_option_value_description {
 }
 
 model nx_menu {
-  nx_menu_id         Int     @id @default(autoincrement())
-  nx_menu_href       String  @db.VarChar(255)
-  nx_menu_name       String  @db.VarChar(255)
-  nx_menu_isExternal Boolean @default(false)
-  nx_menu_isParent   Boolean @default(false)
+  nx_menu_id         Int       @id @default(autoincrement())
+  nx_menu_href       String    @db.VarChar(255)
+  nx_menu_name       String    @db.VarChar(255)
+  nx_menu_isExternal Boolean   @default(false)
+  nx_menu_isParent   Boolean   @default(false)
   nx_parent_id       Int?
+  nx_parentmenu      nx_menu?  @relation("MenuSubmenu", fields: [nx_parent_id], references: [nx_menu_id])
+  nx_submenu         nx_menu[] @relation("MenuSubmenu")
+
+  @@index([nx_parent_id], map: "nx_menu_nx_parent_id_fkey")
 }
 
 model oc_order {

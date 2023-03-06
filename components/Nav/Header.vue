@@ -1,32 +1,33 @@
 <template>
   <div>
     <ul class="flex items-center relative">
-      <!-- <li v-for="item in dataMenu" :class="item.nx_menu_isParent ? 'parent' : ''">
-        <a :href="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'" class="py-2 px-4">
-          {{ item.nx_menu_name }}</a>
-        <Icon name="uil:angle-down" v-if="item.nx_menu_children" />
-        <div class="menulevel2 children hidden absolute left-0 top-full p-4" v-if="item.nx_menu_children">
-          <ul>
-            <li v-for="subitem in item.nx_menu_children">
-              <a :href="subitem.nx_submenu_href" :target="subitem.nx_submenu_isExternal ? '_blank' : '_self'">{{
-                subitem.nx_submenu_name
-              }}</a>
-            </li>
-          </ul>
-        </div>
-      </li> -->
+      <template v-for="item in dataMenu">
+        <li :class="item.nx_menu_isParent ? 'parent' : ''" v-if="!item.nx_parent_id">
+          <a :href="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'" class="py-2 px-4">
+            {{ item.nx_menu_name }}</a>
+          <Icon name="uil:angle-down" v-if="item.nx_menu_isParent" />
+          <div class="menulevel2 children hidden absolute left-0 top-full p-4" v-if="item.nx_menu_isParent">
+            <ul>
+              <li v-for="subitem in dataMenu">
+                <a v-if="subitem.nx_parent_id === item.nx_menu_id" :href="subitem.nx_menu_href"
+                  :target="subitem.nx_menu_isExternal ? '_blank' : '_self'">{{
+                    subitem.nx_menu_name
+                  }}</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </template>
 
-      <li v-for="item in dataMenu">
-        <a :href="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'" class="py-2 px-4">
-          {{ item.nx_menu_name }}</a>
-      </li>
 
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
+
 const { data: dataMenu } = await useFetch('/api/menu')
+
 
 /* 
 type Ilink = {
