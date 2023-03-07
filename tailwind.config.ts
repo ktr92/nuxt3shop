@@ -4,7 +4,8 @@ export default <Partial<Config>>{
   theme: {
     colors: {
       red: '#eb6864',
-      black: '#363636'
+      black: '#363636',
+
     }
   }
 }

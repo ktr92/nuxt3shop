@@ -2,17 +2,20 @@
   <div>
     <ul class="flex items-center relative">
       <template v-for="item in dataMenu">
-        <li :class="item.nx_menu_isParent ? 'parent' : ''" v-if="!item.nx_parent_id">
-          <a :href="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'" class="py-2 px-4">
-            {{ item.nx_menu_name }}</a>
+        <li :class="item.nx_menu_isParent ? 'parent' : ''" v-if="!item.nx_parent_id"
+          class="py-2 first:pl-0 last:pr-0 px-4">
+          <NuxtLink :to="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'"
+            class=" text-md uppercase hover:text-red">
+            {{ item.nx_menu_name }}</NuxtLink>
           <Icon name="uil:angle-down" v-if="item.nx_menu_isParent" />
-          <div class="menulevel2 children hidden absolute left-0 top-full p-4" v-if="item.nx_menu_isParent">
+          <div class="menulevel2 children hidden absolute left-0 top-full py-4" v-if="item.nx_menu_isParent">
             <ul>
               <li v-for="subitem in dataMenu">
-                <a v-if="subitem.nx_parent_id === item.nx_menu_id" :href="subitem.nx_menu_href"
+                <NuxtLink class="hover:text-red block border border-[#ebebeb] mb-1 px-2 uppercase text-[#666666]"
+                  v-if="subitem.nx_parent_id === item.nx_menu_id" :to="subitem.nx_menu_href"
                   :target="subitem.nx_menu_isExternal ? '_blank' : '_self'">{{
                     subitem.nx_menu_name
-                  }}</a>
+                  }}</NuxtLink>
               </li>
             </ul>
           </div>

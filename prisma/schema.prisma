@@ -587,6 +587,7 @@ model nx_menu {
   nx_parent_id       Int?
   nx_parentmenu      nx_menu?  @relation("MenuSubmenu", fields: [nx_parent_id], references: [nx_menu_id])
   nx_submenu         nx_menu[] @relation("MenuSubmenu")
+  nx_menu_sort       Int       @default(0)
 
   @@index([nx_parent_id], map: "nx_menu_nx_parent_id_fkey")
 }
@@ -807,37 +808,38 @@ model oc_order_voucher {
 }
 
 model oc_product {
-  product_id      Int      @id @default(autoincrement())
-  model           String   @db.VarChar(64)
-  sku             String   @db.VarChar(64)
-  upc             String   @db.VarChar(12)
-  ean             String   @db.VarChar(14)
-  jan             String   @db.VarChar(13)
-  isbn            String   @db.VarChar(13)
-  mpn             String   @db.VarChar(64)
-  location        String   @db.VarChar(128)
-  quantity        Int      @default(0)
-  stock_status_id Int
-  image           String?  @db.VarChar(255)
-  manufacturer_id Int
-  shipping        Boolean  @default(true)
-  price           Decimal  @default(0.0000) @db.Decimal(15, 4)
-  points          Int      @default(0)
-  tax_class_id    Int
-  date_available  DateTime @db.Date
-  weight          Decimal  @default(0.00000000) @db.Decimal(15, 8)
-  weight_class_id Int      @default(0)
-  length          Decimal  @default(0.00000000) @db.Decimal(15, 8)
-  width           Decimal  @default(0.00000000) @db.Decimal(15, 8)
-  height          Decimal  @default(0.00000000) @db.Decimal(15, 8)
-  length_class_id Int      @default(0)
-  subtract        Boolean  @default(true)
-  minimum         Int      @default(1)
-  sort_order      Int      @default(0)
-  status          Boolean  @default(false)
-  date_added      DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
-  date_modified   DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
-  viewed          Int      @default(0)
+  product_id             Int                      @id @default(autoincrement())
+  model                  String                   @db.VarChar(64)
+  sku                    String                   @db.VarChar(64)
+  upc                    String                   @db.VarChar(12)
+  ean                    String                   @db.VarChar(14)
+  jan                    String                   @db.VarChar(13)
+  isbn                   String                   @db.VarChar(13)
+  mpn                    String                   @db.VarChar(64)
+  location               String                   @db.VarChar(128)
+  quantity               Int                      @default(0)
+  stock_status_id        Int
+  image                  String?                  @db.VarChar(255)
+  manufacturer_id        Int
+  shipping               Boolean                  @default(true)
+  price                  Decimal                  @default(0.0000) @db.Decimal(15, 4)
+  points                 Int                      @default(0)
+  tax_class_id           Int
+  date_available         DateTime                 @db.Date
+  weight                 Decimal                  @default(0.00000000) @db.Decimal(15, 8)
+  weight_class_id        Int                      @default(0)
+  length                 Decimal                  @default(0.00000000) @db.Decimal(15, 8)
+  width                  Decimal                  @default(0.00000000) @db.Decimal(15, 8)
+  height                 Decimal                  @default(0.00000000) @db.Decimal(15, 8)
+  length_class_id        Int                      @default(0)
+  subtract               Boolean                  @default(true)
+  minimum                Int                      @default(1)
+  sort_order             Int                      @default(0)
+  status                 Boolean                  @default(false)
+  date_added             DateTime                 @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  date_modified          DateTime                 @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  viewed                 Int                      @default(0)
+  oc_product_description oc_product_description[]
 }
 
 model oc_product_attribute {
@@ -859,6 +861,8 @@ model oc_product_description {
   seo_title        String @db.VarChar(255)
   seo_h1           String @db.VarChar(255)
   tag              String @db.Text
+
+  productdata oc_product @relation(fields: [product_id], references: [product_id])
 
   @@id([product_id, language_id])
   @@index([name], map: "name")

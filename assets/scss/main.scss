@@ -3,6 +3,10 @@
   margin-right: auto;
 }
 
+a {
+  transition: all 0.3s ease;
+}
+
 .header__buttons svg {
   width: 25px;
   height: 25px;
