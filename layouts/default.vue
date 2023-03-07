@@ -1,6 +1,8 @@
 <template>
   <div>
     <Header />
-    <slot />
+    <div class="pt-2">
+      <NuxtPage />
+    </div>    
   </div>
 </template>

@@ -45,11 +45,11 @@
     <div class="header__main relative">
       <div class="container flex items-center justify-between py-2">
         <div class="header__logo flex justify-center">
-          <NuxtLink to="/"><img :src="config?.logo.value" alt=""></NuxtLink>
+          <NuxtLink to="/"><img :src="'/'+config?.logo.value" alt=""></NuxtLink>
         </div>
         <div class="header__search md:absolute left-0 right-0 m-auto inline-block w-fit">
 
-          <div class="headertitle text-lg font-semibold text-red">{{ config?.title.value }}</div>
+          <div class="headertitle text-lg font-semibold text-reddish">{{ config?.title.value }}</div>
         </div>
         <div class="header__buttons flex items-center">
           <div class="header__button pl-2">

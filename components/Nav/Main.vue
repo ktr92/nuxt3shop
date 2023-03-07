@@ -8,10 +8,10 @@
             class=" text-md uppercase hover:text-red">
             {{ item.nx_menu_name }}</NuxtLink>
           <Icon name="uil:angle-down" v-if="item.nx_menu_isParent" />
-          <div class="menulevel2 children hidden absolute left-0 top-full py-4" v-if="item.nx_menu_isParent">
+          <div class="menulevel2 children hidden absolute left-0 top-full py-4 z-9" v-if="item.nx_menu_isParent">
             <ul>
               <li v-for="subitem in dataMenu">
-                <NuxtLink class="hover:text-red block border border-[#ebebeb] mb-1 px-2 uppercase text-[#666666]"
+                <NuxtLink class="bg-white hover:text-red block border border-[#ebebeb] mb-1 px-2 uppercase text-[#666666]"
                   v-if="subitem.nx_parent_id === item.nx_menu_id" :to="subitem.nx_menu_href"
                   :target="subitem.nx_menu_isExternal ? '_blank' : '_self'">{{
                     subitem.nx_menu_name
