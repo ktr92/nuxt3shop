@@ -123,15 +123,16 @@ model oc_banner_image_description {
 }
 
 model oc_category {
-  category_id   Int      @id @default(autoincrement())
-  image         String?  @db.VarChar(255)
-  parent_id     Int      @default(0)
-  top           Boolean
-  column        Int
-  sort_order    Int      @default(0)
-  status        Boolean
-  date_added    DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
-  date_modified DateTime @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  category_id             Int                       @id @default(autoincrement())
+  image                   String?                   @db.VarChar(255)
+  parent_id               Int                       @default(0)
+  top                     Boolean
+  column                  Int
+  sort_order              Int                       @default(0)
+  status                  Boolean
+  date_added              DateTime                  @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  date_modified           DateTime                  @default(dbgenerated("'0000-00-00 00:00:00'")) @db.DateTime(0)
+  oc_category_description oc_category_description[]
 }
 
 model oc_category_description {
@@ -143,6 +144,8 @@ model oc_category_description {
   meta_keyword     String @db.VarChar(255)
   seo_title        String @db.VarChar(255)
   seo_h1           String @db.VarChar(255)
+
+  category oc_category @relation(fields: [category_id], references: [category_id])
 
   @@id([category_id, language_id])
   @@index([name], map: "name")

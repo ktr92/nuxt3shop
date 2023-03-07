@@ -1,6 +1,6 @@
 import { getConfig } from "~~/server/data/config/config"
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const config = getConfig()
   const header = config.then(response => {
     return {
