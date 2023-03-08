@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="bg-white dark:bg-dim-900">
     <Header />
     <div class="pt-2">
       <NuxtPage />
-    </div>    
+    </div>
   </div>
 </template>

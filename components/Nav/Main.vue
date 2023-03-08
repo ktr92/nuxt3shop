@@ -3,11 +3,11 @@
     <ul class="flex items-center relative">
       <template v-for="item in dataMenu">
         <li :class="item.nx_menu_isParent ? 'parent' : ''" v-if="!item.nx_parent_id"
-          class="py-2 first:pl-0 last:pr-0 px-4">
+          class="flex items-center py-2 first:pl-0 last:pr-0 px-4">
           <NuxtLink :to="item.nx_menu_href" :target="item.nx_menu_isExternal ? '_blank' : '_self'"
             class=" text-md uppercase hover:text-red">
             {{ item.nx_menu_name }}</NuxtLink>
-          <Icon name="uil:angle-down" v-if="item.nx_menu_isParent" />
+          <ChevronDownIcon name="uil:angle-down" v-if="item.nx_menu_isParent" class="w-4 h-4 ml-1" />
           <div class="menulevel2 children hidden absolute left-0 top-full py-4 z-9" v-if="item.nx_menu_isParent">
             <ul>
               <li v-for="subitem in dataMenu">
@@ -28,6 +28,8 @@
 </template>
 
 <script setup lang="ts">
+import { ChevronDownIcon } from '@heroicons/vue/20/solid';
+
 
 const { data: dataMenu } = await useFetch('/api/menu')
 
