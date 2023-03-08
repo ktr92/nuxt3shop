@@ -14,10 +14,26 @@ export async function getCategoryPath(path: string) {
 }
 
 export async function getCategoryInfo(id: number) {
-  const db_category = prisma.oc_category_description.findMany({
-
-    include: {
-      category: true
+  const db_category = prisma.oc_category_description.findFirst({
+    select: {
+      category_id: true,
+      name: true,
+      description: true,
+      meta_description: true,
+      meta_keyword: true,
+      seo_title: true,
+      seo_h1: true,
+      categoryinfo: {
+        select: {
+          image: true,
+          parent_id: true,
+          status: true
+        }
+      }
+    },
+    where: {
+      category_id: id,
+      language_id: 1
     }
   })
   return db_category
