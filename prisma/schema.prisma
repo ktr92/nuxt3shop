@@ -595,6 +595,12 @@ model nx_menu {
   @@index([nx_parent_id], map: "nx_menu_nx_parent_id_fkey")
 }
 
+model nx_socials {
+  nx_socials_id   Int    @id @default(autoincrement())
+  nx_socials_link String @db.VarChar(255)
+  nx_socials_icon String @db.VarChar(26)
+}
+
 model oc_order {
   order_id                Int      @id @default(autoincrement())
   invoice_no              Int      @default(0)
