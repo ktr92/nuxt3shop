@@ -1,5 +1,12 @@
 @import "tailwindcss/base";
 
+body {
+  overflow-y: scroll;
+}
+
+a {
+  @apply transition-all
+}
 
 h1 {
 

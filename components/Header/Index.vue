@@ -1,20 +1,24 @@
 <template>
   <div class="header">
-    <div class="header__top" v-if="config">
-      <HeaderTop :config="config" />
-    </div>
-    <div class="header__main relative py-8">
-      <div class="container flex items-center justify-between py-2">
-        <div class="header__socials" v-if="socialResult">
-          <ul class="flex items-center">
-            <template v-for="item in socialResult">
-              <ContentContactsIconlink :link="item.link">
-                <component :is="item.icon"></component>
-              </ContentContactsIconlink>
-            </template>
-          </ul>
+
+    <div class="header__main relative py-2">
+      <div class="container flex items-center justify-between py-8">
+        <div class="header__contacts -mx-2 flex items-center">
+          <div class="px-2">
+            <UIIconlink :link="'tel:' + config?.phone.value">
+              <PhoneArrowUpRightIcon />
+            </UIIconlink>
+          </div>
+          <div class="px-2">
+            <UIIconlink :link="'mailto:' + config?.email.value">
+              <EnvelopeIcon />
+            </UIIconlink>
+          </div>
+          <div class="px-2">
+            <ContentSocials />
+          </div>
         </div>
-        <div class="header__logo flex justify-center md:absolute left-0 right-0 m-auto  w-fit">
+        <div class="header__logo flex justify-center md:absolute left-0 right-0 m-auto  w-40">
           <NuxtLink to="/"><img :src="'/' + config?.logo.value" alt=""></NuxtLink>
         </div>
 
@@ -25,12 +29,12 @@
           </div>
           <div class="header__button pl-3">
             <a href="">
-              <UserIcon class="w-6 h-6" />
+              <UserIcon class="w-6 h-6 stroke-slate-600" />
             </a>
           </div>
           <div class="header__button pl-3">
             <a href="">
-              <ShoppingBagIcon class="w-6 h-6" />
+              <ShoppingBagIcon class="w-6 h-6 stroke-slate-600" />
             </a>
           </div>
         </div>
@@ -38,32 +42,19 @@
       </div>
     </div>
     <div class="header__menu">
-      <div class="container flex items-center justify-between border-b-4 border-[#636363]">
-        <NavMain />
+      <div class="container flex items-center justify-between border-b-2 border-slate-200">
+        <NavMainMenu />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { nx_socials } from '.prisma/client';
-import { ShoppingBagIcon, UserIcon } from '@heroicons/vue/24/outline'
-import { defineAsyncComponent } from 'vue'
+import { ShoppingBagIcon, UserIcon, PhoneArrowUpRightIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
 
 const { data: config } = await useFetch('/api/config')
 
-const socialResult = await useFetch('/api/config/socials').then(response => {
-  const result = (response.data.value as Array<nx_socials>).map(item => {
-    return {
-      link: item.nx_socials_link,
-      icon: defineAsyncComponent(() =>
-        import(`@/components/Icons/${item.nx_socials_icon}.vue`)
-      )
-    }
-  })
 
-  return result
-})
 
 </script>
 

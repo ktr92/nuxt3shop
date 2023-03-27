@@ -1,9 +1,7 @@
 <template>
-  <li class="pl-2">
-    <a :href="link" target="_blank">
-      <slot></slot>
-    </a>
-  </li>
+  <a :href="link" target="_blank" class="inline-block">
+    <slot></slot>
+  </a>
 </template>
 
 <script setup lang="ts">

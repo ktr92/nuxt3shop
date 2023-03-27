@@ -21,6 +21,7 @@ export default <Partial<Config>>{
         reddish: '#eb6864',
         blackish: '#363636',
         green: '#61bc00',
+        blue: '#018bc8',
         dim: {
           50: "#5F99F7",
           100: "#5F99F7",
