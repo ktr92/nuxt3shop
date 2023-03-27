@@ -3,6 +3,7 @@
     <Header />
     <div class="container max-w-200 mx-auto py-10 px-4">
       <h1>Ошибка {{ error?.statusCode }} 😱</h1>
+      <h2>{{ error?.message }}</h2>
       <br>
       <button @click="handleError">
         Перейти на главную

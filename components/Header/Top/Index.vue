@@ -9,7 +9,7 @@
 
     <div class="header__title md:absolute left-0 right-0 m-auto inline-block w-fit">
 
-      <div class="headertitle text-lg font-semibold text-reddish">{{ config?.title.value }}</div>
+      <div class="headertitle text-lg ">{{ config?.title.value }}</div>
     </div>
 
     <div class="header__contacts flex items-center justify-start">

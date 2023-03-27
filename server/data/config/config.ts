@@ -8,7 +8,7 @@ export async function getConfig() {
       key: true
     },
     where: {
-      group: 'config'
+      code: 'config'
     }
   })
   return db_config

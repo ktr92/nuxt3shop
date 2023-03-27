@@ -1,11 +1,11 @@
 <template>
   <div class="header">
-    <div class="header__top">
+    <div class="header__top" v-if="config">
       <HeaderTop :config="config" />
     </div>
-    <div class="header__main relative py-4">
+    <div class="header__main relative py-8">
       <div class="container flex items-center justify-between py-2">
-        <div class="header__socials">
+        <div class="header__socials" v-if="socialResult">
           <ul class="flex items-center">
             <template v-for="item in socialResult">
               <ContentContactsIconlink :link="item.link">
@@ -19,15 +19,16 @@
         </div>
 
         <div class="header__buttons flex items-center">
-          <div class="header__button pl-2">
+          <div class="header__button pl-3">
             <a href="">
             </a>
           </div>
-          <div class="header__button pl-2">
+          <div class="header__button pl-3">
             <a href="">
+              <UserIcon class="w-6 h-6" />
             </a>
           </div>
-          <div class="header__button pl-2">
+          <div class="header__button pl-3">
             <a href="">
               <ShoppingBagIcon class="w-6 h-6" />
             </a>
@@ -46,7 +47,7 @@
 
 <script setup lang="ts">
 import { nx_socials } from '.prisma/client';
-import { ShoppingBagIcon } from '@heroicons/vue/24/outline'
+import { ShoppingBagIcon, UserIcon } from '@heroicons/vue/24/outline'
 import { defineAsyncComponent } from 'vue'
 
 const { data: config } = await useFetch('/api/config')

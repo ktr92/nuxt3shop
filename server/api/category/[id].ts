@@ -1,6 +1,5 @@
 import { getCategoryPath, getCategoryInfo } from "~~/server/data/category/category"
 
-
 export default defineEventHandler(async (event) => {
   // get PATH 
   const path: string = event.context.params?.id as string

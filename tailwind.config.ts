@@ -13,10 +13,14 @@ export default <Partial<Config>>{
       lg: "1092px",
       xl: "1280px",
     },
+    animation: {
+      ping: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;'
+    },
     extend: {
       colors: {
         reddish: '#eb6864',
         blackish: '#363636',
+        green: '#61bc00',
         dim: {
           50: "#5F99F7",
           100: "#5F99F7",

@@ -21,8 +21,8 @@ export async function getCategoryInfo(id: number) {
       description: true,
       meta_description: true,
       meta_keyword: true,
-      seo_title: true,
-      seo_h1: true,
+      meta_title: true,
+      meta_h1: true,
       categoryinfo: {
         select: {
           image: true,
