@@ -4,17 +4,17 @@
     <div class="header__main relative py-2">
       <div class="container flex items-center justify-between py-8">
         <div class="header__contacts -mx-2 flex items-center">
-          <div class="px-2">
+          <div>
             <UIIconlink :link="'tel:' + config?.phone.value">
-              <PhoneArrowUpRightIcon />
+              <PhoneArrowUpRightIcon class="stroke-slate-600 w-6 h-6" />
             </UIIconlink>
           </div>
-          <div class="px-2">
+          <div>
             <UIIconlink :link="'mailto:' + config?.email.value">
-              <EnvelopeIcon />
+              <EnvelopeIcon class="stroke-slate-600 w-6 h-6" />
             </UIIconlink>
           </div>
-          <div class="px-2">
+          <div>
             <ContentSocials />
           </div>
         </div>
@@ -23,16 +23,16 @@
         </div>
 
         <div class="header__buttons flex items-center">
-          <div class="header__button pl-3">
+          <div class="header__button pl-4">
             <a href="">
             </a>
           </div>
-          <div class="header__button pl-3">
+          <div class="header__button pl-4">
             <a href="">
               <UserIcon class="w-6 h-6 stroke-slate-600" />
             </a>
           </div>
-          <div class="header__button pl-3">
+          <div class="header__button pl-4">
             <a href="">
               <ShoppingBagIcon class="w-6 h-6 stroke-slate-600" />
             </a>
