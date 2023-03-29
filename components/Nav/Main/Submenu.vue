@@ -1,20 +1,20 @@
 <template>
-  <ul class="columns-1">
-    <div :class="[isMasonry ? 'columns-2 md:columns-3 lg:columns-4 p-4' : 'columns-1']">
-      <li v-for="subitem in item.submenu" class="columns-1">
+  <ul>
+    <div :class="['columns-' + item.submenu_columns]">
+      <li v-for="subitem in item.submenu">
         <template v-if="subitem.link">
-          <NuxtLink v-if="subitem.name" class="bg-white  hover:text-green block mb-1 px-2  text-[#666666]"
+          <NuxtLink v-if="subitem.name" class="bg-white text-sm mb-2 hover:text-green block text-[#666666] leading-4"
             :to="subitem.link" :target="subitem.new_window ? '_blank' : '_self'">
             {{ subitem.name }}
           </NuxtLink>
         </template>
         <template v-else>
           <div v-if="subitem.content" v-html="decodeHtmlCharCodes(subitem.content)"></div>
-          <div v-else class="font-semibold text-blue">
+          <div v-else class="font-semibold text-blue mb-2">
             {{ subitem.name }}
           </div>
         </template>
-        <div v-if="item.submenu.length">
+        <div v-if="subitem.submenu">
           <NavMainSubmenu :item="subitem" />
         </div>
       </li>
@@ -26,14 +26,11 @@ const props = defineProps({
   item: {
     type: Object,
     default: () => { }
-  },
-  level: {
-    type: Number,
-    default: 3
   }
 })
 const { item } = toRefs(props)
-const isMasonry = computed(() => props.level === 2)
+
+
 </script>
 
 <style scoped>

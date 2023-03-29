@@ -9,11 +9,8 @@ const props = defineProps({
   link: String,
 })
 </script>
-
 <style scoped lang="scss">
 a {
-
-
   >* {
     @apply fill-slate-500;
     @apply stroke-slate-500;

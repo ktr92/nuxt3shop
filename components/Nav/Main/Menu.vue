@@ -1,29 +1,33 @@
 <template>
-  <div class="w-full ">
-    <ul class="flex items-center justify-between w-full  relative ">
-      <template v-for="item in dataMenu">
-        <li :class="item.submenu.length ? 'parent' : ''" v-if="!item.parent_id"
-          class="flex items-center py-2 first:pl-0 last:pr-0 px-4 ">
-          <NuxtLink v-if="item.link" :to="item.link" :target="item.new_window ? '_blank' : '_self'"
-            class=" text-md  hover:text-blue whitespace-nowrap">
-            {{ item.name }}</NuxtLink>
-          <ChevronDownIcon name="uil:angle-down" v-if="item.submenu.length" class="w-4 h-4 ml-1" />
-          <div
-            class="menulevel2 children hidden absolute left-0 top-full py-4 z-9 w-full shadow-md	 rounded-b-md shadow-slate-200"
-            v-if="item.submenu.length">
-            <NavMainSubmenu :item="item" :level="2" />
-          </div>
-        </li>
-      </template>
+  <div class="border-b-2 border-slate-200">
+    <div class="container flex items-center justify-between ">
+
+      <div class="w-full ">
+        <ul class="flex items-center justify-between w-full  relative ">
+          <template v-for="item in dataMenu">
+            <li :class="item.submenu.length ? 'parent' : ''" v-if="!item.parent_id"
+              class="flex items-center pt-1 pb-2 first:pl-0 last:pr-0 px-4 ">
+              <NuxtLink v-if="item.link" :to="item.link" :target="item.new_window ? '_blank' : '_self'"
+                class=" text-md  hover:text-blue whitespace-nowrap">
+                {{ item.name }}</NuxtLink>
+              <ChevronDownIcon name="uil:angle-down" v-if="item.submenu.length" class="w-4 h-4 ml-1" />
+              <div
+                class="menulevel2 bg-white children hidden absolute left-0 top-full py-4 z-9 w-full shadow-md	 rounded-b-md shadow-slate-200 px-6"
+                v-if="item.submenu.length">
+                <NavMainSubmenu :item="item" />
+              </div>
+            </li>
+          </template>
 
 
-    </ul>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
-import { decodeHtmlCharCodes } from '@/utils/htmldecode'
 
 
 const { data: dataMenu } = await useFetch('/api/menu')

@@ -1026,6 +1026,7 @@ model oc_mega_menu {
   display_on_mobile           Int     @default(0)
   position                    Int     @default(0)
   submenu_width               String? @db.Text
+  submenu_columns             Int     @default(1)
   submenu_type                Int     @default(0)
   submenu_background          String? @db.Text
   submenu_background_position String? @db.Text

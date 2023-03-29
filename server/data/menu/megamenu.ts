@@ -9,6 +9,8 @@ export async function getMenu() {
       parent_id: true,
       link: true,
       new_window: true,
+      submenu_columns: true,
+
       submenu: {
         select: {
           id: true,
@@ -17,6 +19,8 @@ export async function getMenu() {
           new_window: true,
           link: true,
           name: true,
+          submenu_columns: true,
+
           submenu: {
             select: {
               id: true,
@@ -24,19 +28,36 @@ export async function getMenu() {
               content: true,
               new_window: true,
               link: true,
-              name: true
+              name: true,
+              submenu_columns: true
             },
             where: {
               status: 1
             },
+            orderBy: [
+              {
+                rang: 'asc'
+              },
+              {
+                name: 'asc'
+              }
+            ]
+
           },
         },
+
         where: {
           status: 1
         },
+        orderBy: [
+          {
+            rang: 'asc'
+          },
+          {
+            name: 'asc'
+          }
+        ]
       },
-
-
     },
     where: {
       module_id: 0,
