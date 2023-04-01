@@ -3,8 +3,10 @@
     <div :class="['columns-' + item.submenu_columns]">
       <li v-for="subitem in item.submenu">
         <template v-if="subitem.link">
-          <NuxtLink v-if="subitem.name" class="bg-white text-sm mb-2 hover:text-green block text-[#666666] leading-4"
-            :to="subitem.link" :target="subitem.new_window ? '_blank' : '_self'">
+          <NuxtLink v-if="subitem.name" class="bg-white mb-2 hover:text-green block leading-4" :class="{
+            'font-semibold text-blue mb-2': subitem.istitle,
+            'text-sm text-[#666666]': !subitem.istitle
+          }" :to="subitem.link" :target="subitem.new_window ? '_blank' : '_self'">
             {{ subitem.name }}
           </NuxtLink>
         </template>

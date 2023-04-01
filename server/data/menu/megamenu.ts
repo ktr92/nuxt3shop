@@ -20,7 +20,7 @@ export async function getMenu() {
           link: true,
           name: true,
           submenu_columns: true,
-
+          istitle: true,
           submenu: {
             select: {
               id: true,
@@ -29,7 +29,8 @@ export async function getMenu() {
               new_window: true,
               link: true,
               name: true,
-              submenu_columns: true
+              submenu_columns: true,
+              istitle: true,
             },
             where: {
               status: 1

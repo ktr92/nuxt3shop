@@ -1034,6 +1034,7 @@ model oc_mega_menu {
   content_width               Int     @default(12)
   content_type                Int     @default(0)
   content                     String? @db.Text
+  istitle                     Boolean @default(false)
 
   // submenu
   parentmenu oc_mega_menu?  @relation("Submenu", fields: [parent_id], references: [id])
