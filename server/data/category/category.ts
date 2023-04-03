@@ -1,14 +1,14 @@
-import prisma from '../prisma'
+import prisma from "../prisma"
 
 export async function getCategoryPath(path: string) {
   const db_category = prisma.oc_url_alias.findFirst({
     select: {
       query: true,
-      keyword: true
+      keyword: true,
     },
     where: {
-      keyword: path
-    }
+      keyword: path,
+    },
   })
   return db_category
 }
@@ -27,14 +27,14 @@ export async function getCategoryInfo(id: number) {
         select: {
           image: true,
           parent_id: true,
-          status: true
-        }
-      }
+          status: true,
+        },
+      },
     },
     where: {
       category_id: id,
-      language_id: 1
-    }
+      language_id: 1,
+    },
   })
   return db_category
 }
