@@ -1326,37 +1326,38 @@ model oc_pokupki_orders {
 }
 
 model oc_product {
-  product_id      Int      @id @default(autoincrement())
-  model           String   @db.VarChar(64)
-  sku             String   @db.VarChar(64)
-  upc             String   @db.VarChar(12)
-  ean             String   @db.VarChar(14)
-  jan             String   @db.VarChar(13)
-  isbn            String   @db.VarChar(17)
-  mpn             String   @db.VarChar(64)
-  location        String   @db.VarChar(128)
-  quantity        Int      @default(0)
-  stock_status_id Int
-  image           String?  @db.VarChar(255)
-  manufacturer_id Int
-  shipping        Boolean  @default(true)
-  price           Decimal  @default(0.0000) @db.Decimal(15, 4)
-  points          Int      @default(0)
-  tax_class_id    Int
-  date_available  DateTime @default(dbgenerated("'0000-00-00'")) @db.Date
-  weight          Decimal  @default(0.00) @db.Decimal(15, 2)
-  weight_class_id Int      @default(0)
-  length          Decimal  @default(0.00) @db.Decimal(15, 2)
-  width           Decimal  @default(0.00) @db.Decimal(15, 2)
-  height          Decimal  @default(0.00) @db.Decimal(15, 2)
-  length_class_id Int      @default(0)
-  subtract        Boolean  @default(true)
-  minimum         Int      @default(1)
-  sort_order      Int      @default(0)
-  status          Boolean  @default(false)
-  viewed          Int      @default(0)
-  date_added      DateTime @db.DateTime(0)
-  date_modified   DateTime @db.DateTime(0)
+  product_id             Int                      @id @default(autoincrement())
+  model                  String                   @db.VarChar(64)
+  sku                    String                   @db.VarChar(64)
+  upc                    String                   @db.VarChar(12)
+  ean                    String                   @db.VarChar(14)
+  jan                    String                   @db.VarChar(13)
+  isbn                   String                   @db.VarChar(17)
+  mpn                    String                   @db.VarChar(64)
+  location               String                   @db.VarChar(128)
+  quantity               Int                      @default(0)
+  stock_status_id        Int
+  image                  String?                  @db.VarChar(255)
+  manufacturer_id        Int
+  shipping               Boolean                  @default(true)
+  price                  Decimal                  @default(0.0000) @db.Decimal(15, 4)
+  points                 Int                      @default(0)
+  tax_class_id           Int
+  date_available         DateTime                 @default(dbgenerated("'0000-00-00'")) @db.Date
+  weight                 Decimal                  @default(0.00) @db.Decimal(15, 2)
+  weight_class_id        Int                      @default(0)
+  length                 Decimal                  @default(0.00) @db.Decimal(15, 2)
+  width                  Decimal                  @default(0.00) @db.Decimal(15, 2)
+  height                 Decimal                  @default(0.00) @db.Decimal(15, 2)
+  length_class_id        Int                      @default(0)
+  subtract               Boolean                  @default(true)
+  minimum                Int                      @default(1)
+  sort_order             Int                      @default(0)
+  status                 Boolean                  @default(false)
+  viewed                 Int                      @default(0)
+  date_added             DateTime                 @db.DateTime(0)
+  date_modified          DateTime                 @db.DateTime(0)
+  oc_product_description oc_product_description[]
 
   @@index([ean], map: "ean")
   @@index([isbn], map: "isbn")
@@ -1377,15 +1378,16 @@ model oc_product_attribute {
 }
 
 model oc_product_description {
-  product_id       Int
-  language_id      Int
-  name             String @db.VarChar(255)
-  description      String @db.Text
-  tag              String @db.Text
-  meta_title       String @db.VarChar(255)
-  meta_h1          String @db.VarChar(255)
-  meta_description String @db.VarChar(255)
-  meta_keyword     String @db.VarChar(255)
+  product_id          Int
+  language_id         Int
+  name                String     @db.VarChar(255)
+  description         String     @db.Text
+  tag                 String     @db.Text
+  meta_title          String     @db.VarChar(255)
+  meta_h1             String     @db.VarChar(255)
+  meta_description    String     @db.VarChar(255)
+  meta_keyword        String     @db.VarChar(255)
+  product_description oc_product @relation(fields: [product_id], references: [product_id])
 
   @@id([product_id, language_id])
   @@index([name], map: "name")

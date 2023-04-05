@@ -2,13 +2,15 @@
   <div>
     <div class="container">
       <div v-if="category">
-        <h1>{{ category.name }}</h1>
+        <h1 class="my-8">{{ category.name }}</h1>
         <div v-if="category.products">
-          <div v-for="product in category.products">
-            {{ product.product_id }}
+          <div class="grid grid-cols-4 gap-3">
+            <div v-for="product in category.products">
+              <ContentProductCard :product="product"> </ContentProductCard>
+            </div>
           </div>
         </div>
-        <div class="description" v-html="description"></div>
+        <div class="description my-8" v-html="description"></div>
       </div>
     </div>
   </div>
@@ -16,26 +18,6 @@
 
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
-
-interface IProductId {
-  product_id: number
-}
-
-interface ICategory {
-  category_id: number
-  name: string
-  description: string
-  meta_description: string
-  meta_keyword: string
-  meta_title: string
-  meta_h1: string
-  categoryinfo: {
-    image: string
-    parent_id: number
-    status: Boolean
-  }
-  products: Array<IProductId>
-}
 
 const route = useRoute()
 const { data: category, error } = await useFetch<ICategory>(

@@ -5,15 +5,13 @@ body {
 }
 
 a {
-  @apply transition-all
+  @apply transition-all;
 }
 
 h1 {
-
   @apply text-4xl;
   @apply mb-4;
   @apply font-bold;
-
 }
 
 h2 {
@@ -33,35 +31,39 @@ p {
   }
 }
 
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
 
 .columns-1 {
-  columns: 1
+  columns: 1;
 }
 
 .columns-2 {
-  columns: 2
+  columns: 2;
 }
 
 .columns-3 {
-  columns: 3
+  columns: 3;
 }
 
 .columns-4 {
-  columns: 4
+  columns: 4;
 }
 
 .columns-5 {
-  columns: 5
+  columns: 5;
 }
 
 .columns-6 {
-  columns: 6
+  columns: 6;
 }
 
 .columns-7 {
-  columns: 7
+  columns: 7;
 }
 
 .columns-8 {
-  columns: 8
+  columns: 8;
 }

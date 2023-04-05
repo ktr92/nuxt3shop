@@ -10,13 +10,35 @@ export async function getProductsByCategory(categoryId: number) {
     },
   })
 
-  /* const products = await prisma.oc_product.findMany({
-    where: {
-      product_id: {
-        in: [...products_id]
-      }
-    }
-  }) */
+  const products_array = products_id.map((item: IProductId) => item.product_id)
 
-  return products_id
+  const products = await prisma.oc_product.findMany({
+    select: {
+      product_id: true,
+      status: true,
+      image: true,
+      price: true,
+      sku: true,
+      quantity: true,
+      manufacturer_id: true,
+      sort_order: true,
+      oc_product_description: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    where: {
+      AND: [
+        {
+          product_id: {
+            in: [...products_array],
+          },
+          status: true,
+        },
+      ],
+    },
+  })
+
+  return products
 }
