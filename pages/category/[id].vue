@@ -10,7 +10,7 @@
             </div>
           </div>
         </div>
-        <div class="description my-8" v-html="description"></div>
+        <div class="content description my-8" v-html="description"></div>
       </div>
     </div>
   </div>

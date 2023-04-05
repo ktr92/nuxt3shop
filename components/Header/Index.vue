@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header relative z-99">
     <div class="header__main relative">
       <HeaderMain />
     </div>
@@ -9,11 +9,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-
-
-
-
-</script>
+<script setup lang="ts"></script>
 
 <style></style>
