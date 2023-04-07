@@ -1,6 +1,10 @@
 import prisma from "../prisma"
 
-export async function getProductsByCategory(categoryId: number) {
+export async function getProductsByCategory(
+  categoryId: number,
+  page: number,
+  takes: number
+) {
   const products_id = await prisma.oc_product_to_category.findMany({
     select: {
       product_id: true,
@@ -12,7 +16,25 @@ export async function getProductsByCategory(categoryId: number) {
 
   const products_array = products_id.map((item: IProductId) => item.product_id)
 
+  const products_count = await prisma.oc_product.aggregate({
+    _count: {
+      product_id: true,
+    },
+    where: {
+      AND: [
+        {
+          product_id: {
+            in: [...products_array],
+          },
+          status: true,
+        },
+      ],
+    },
+  })
+
   const products = await prisma.oc_product.findMany({
+    take: takes,
+    skip: page,
     select: {
       product_id: true,
       status: true,
@@ -38,7 +60,10 @@ export async function getProductsByCategory(categoryId: number) {
         },
       ],
     },
+    orderBy: {
+      sort_order: "asc",
+    },
   })
 
-  return products
+  return { products: { ...products }, products_count }
 }

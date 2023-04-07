@@ -9,6 +9,12 @@
               <ContentProductCard :product="product"> </ContentProductCard>
             </div>
           </div>
+          <NavPager
+            :current-page-prop="1"
+            :total-items-prop="category.products_count._count.product_id"
+            :per-page-prop="3"
+            @pageChanged="pageChanged($event)"
+          ></NavPager>
         </div>
         <div class="content description my-8" v-html="description"></div>
       </div>
@@ -20,8 +26,16 @@
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
 
 const route = useRoute()
-const { data: category, error } = await useFetch<ICategory>(
-  "/api/category/" + route.params.id
+
+const page = ref(1)
+const take = ref(8)
+const {
+  data: category,
+  pending,
+  refresh,
+  error,
+} = await useFetch<ICategory>(
+  () => `/api/category/${route.params.id}?page=${page.value}&take=${take.value}`
 )
 
 if (error.value) {
@@ -36,6 +50,11 @@ if (error.value) {
 const description = computed(() => {
   return category.value ? decodeHtmlCharCodes(category.value.description) : ""
 })
+
+const pageChanged = (p: number) => {
+  page.value = p
+  refresh()
+}
 </script>
 
 <style></style>

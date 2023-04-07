@@ -31,5 +31,10 @@ declare global {
     name: string
     description: string
     products: Array<productWithDescription>
+    products_count: ICount
+  }
+
+  interface ICount {
+    _count: IProductId
   }
 }

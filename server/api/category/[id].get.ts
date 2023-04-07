@@ -5,6 +5,8 @@ import {
 import { getProductsByCategory } from "~~/server/data/product/product"
 
 export default defineEventHandler(async (event) => {
+  const query = getQuery(event)
+  console.log(query)
   // get PATH
   const path: string = event.context.params?.id as string
   // get item path-url relation from DB through the PATH
@@ -15,10 +17,14 @@ export default defineEventHandler(async (event) => {
     // get item from DB through the path
     const category = await getCategoryInfo(cat_id)
 
-    const products = await getProductsByCategory(cat_id)
+    const { products, products_count } = await getProductsByCategory(
+      cat_id,
+      Number(query.page),
+      Number(query.take)
+    )
 
     if ((category as any).categoryinfo.status) {
-      return { ...category, products }
+      return { ...category, products, products_count }
     }
   }
 
