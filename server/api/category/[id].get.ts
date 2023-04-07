@@ -6,7 +6,6 @@ import { getProductsByCategory } from "~~/server/data/product/product"
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  console.log(query)
   // get PATH
   const path: string = event.context.params?.id as string
   // get item path-url relation from DB through the PATH

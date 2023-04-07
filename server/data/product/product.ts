@@ -1,3 +1,4 @@
+import { oc_product } from "@prisma/client"
 import prisma from "../prisma"
 
 export async function getProductsByCategory(
@@ -34,7 +35,8 @@ export async function getProductsByCategory(
 
   const products = await prisma.oc_product.findMany({
     take: takes,
-    skip: page,
+    skip: page === 1 ? 0 : (page - 1) * takes,
+
     select: {
       product_id: true,
       status: true,
@@ -60,10 +62,7 @@ export async function getProductsByCategory(
         },
       ],
     },
-    orderBy: {
-      sort_order: "asc",
-    },
+    orderBy: [{ sort_order: "asc" }, { product_id: "asc" }],
   })
-
   return { products: { ...products }, products_count }
 }

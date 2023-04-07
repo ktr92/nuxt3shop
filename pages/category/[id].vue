@@ -10,9 +10,9 @@
             </div>
           </div>
           <NavPager
-            :current-page-prop="1"
+            :current-page-prop="page"
             :total-items-prop="category.products_count._count.product_id"
-            :per-page-prop="3"
+            :per-page-prop="take"
             @pageChanged="pageChanged($event)"
           ></NavPager>
         </div>
@@ -53,7 +53,6 @@ const description = computed(() => {
 
 const pageChanged = (p: number) => {
   page.value = p
-  refresh()
 }
 </script>
 
