@@ -30,6 +30,8 @@ declare global {
     category_id: number
     name: string
     description: string
+    meta_title: string
+    meta_description: string
     products: Array<productWithDescription>
     products_count: ICount
   }

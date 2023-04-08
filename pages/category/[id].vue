@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
-import { catchClause } from "@babel/types"
 
 const TAKE_NUMBER = 8
 
@@ -48,6 +47,20 @@ const {
   () =>
     `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}`
 )
+
+useServerSeoMeta({
+  title: category.value ? category.value.meta_title : "",
+  ogTitle: category.value ? category.value.meta_title : "",
+  description: category.value ? category.value.meta_description : "",
+  ogDescription: category.value ? category.value.meta_description : "",
+  ogImage: category.value ? category.value.image : "",
+})
+
+useSeoMeta({
+  title: category.value ? category.value.meta_title : "",
+  description: () =>
+    `description: ${category.value ? category.value.meta_description : ""}`,
+})
 
 const pageConfig = useMain()
 pageConfig.setPageInfo(category.value ? category.value.name : "", "#")
