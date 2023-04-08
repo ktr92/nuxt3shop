@@ -19,7 +19,8 @@ export default defineEventHandler(async (event) => {
     const { products, products_count } = await getProductsByCategory(
       cat_id,
       Number(query.page),
-      Number(query.take)
+      Number(query.take),
+      Number(query.skip)
     )
 
     if ((category as any).categoryinfo.status) {

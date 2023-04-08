@@ -87,6 +87,11 @@ export default {
       pageRange: this.pageRangeProp,
     }
   },
+  watch: {
+    currentPageProp() {
+      this.currentPage = this.currentPageProp
+    },
+  },
   computed: {
     totalPages() {
       return Math.ceil(this.totalItems / this.perPage)
@@ -149,7 +154,7 @@ export default {
 
 <style scoped>
 .pager {
-  @apply my-8 relative z-0 inline-flex rounded-md -space-x-px mx-auto w-full justify-center;
+  @apply my-16 relative z-0 inline-flex rounded-md -space-x-px mx-auto w-full justify-center;
 }
 .pagerArrow {
   @apply relative inline-flex items-center px-2 py-2 border border-gray-200 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50;

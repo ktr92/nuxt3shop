@@ -4,7 +4,8 @@ import prisma from "../prisma"
 export async function getProductsByCategory(
   categoryId: number,
   page: number,
-  takes: number
+  takes: number,
+  skip: number
 ) {
   const products_id = await prisma.oc_product_to_category.findMany({
     select: {
@@ -35,7 +36,7 @@ export async function getProductsByCategory(
 
   const products = await prisma.oc_product.findMany({
     take: takes,
-    skip: page === 1 ? 0 : (page - 1) * takes,
+    skip: skip,
 
     select: {
       product_id: true,
