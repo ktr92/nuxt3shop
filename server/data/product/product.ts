@@ -5,7 +5,9 @@ export async function getProductsByCategory(
   categoryId: number,
   page: number,
   takes: number,
-  skip: number
+  skip: number,
+  sort_field: string,
+  sort_direction: string
 ) {
   const products_id = await prisma.oc_product_to_category.findMany({
     select: {
@@ -63,7 +65,7 @@ export async function getProductsByCategory(
         },
       ],
     },
-    orderBy: [{ sort_order: "asc" }, { product_id: "asc" }],
+    orderBy: [{ [sort_field]: sort_direction }, { product_id: "desc" }],
   })
   return { products: { ...products }, products_count }
 }

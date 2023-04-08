@@ -2,7 +2,13 @@
   <div>
     <div class="container relative">
       <template v-if="category">
-        <h1 class="my-8">{{ category.name }}</h1>
+        <div class="flex items-center justify-between">
+          <h1 class="my-8">{{ category.name }}</h1>
+          <div class="flex">
+            <UIDropdown title="Сортировка" :items="sorting" @sorting="sort" />
+          </div>
+        </div>
+
         <div v-if="category.products">
           <div class="grid grid-cols-4 gap-3">
             <div v-for="product in category.products">
@@ -38,6 +44,8 @@ const page = ref(1)
 const take = ref(TAKE_NUMBER)
 const takegrow = ref(TAKE_NUMBER)
 const skip = ref(page.value === 1 ? 0 : (page.value - 1) * take.value)
+const sort_field = ref("sort_order")
+const sort_direction = ref("asc")
 const {
   data: category,
   pending,
@@ -45,7 +53,7 @@ const {
   error,
 } = await useFetch<ICategory>(
   () =>
-    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}`
+    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_fiels=${sort_field.value}&sort_direction=${sort_direction.value}`
 )
 
 useServerSeoMeta({
@@ -101,6 +109,32 @@ const showAll = () => {
   take.value = totalCount.value
   skip.value = 0
 }
+
+const sort = (field: string, direction: string) => {
+  sort_field.value = field
+  sort_direction.value = direction
+}
+
+const sorting = [
+  {
+    title: "По умолчанию",
+    param: "sort_order",
+    prop: "asc",
+    icon: "",
+  },
+  {
+    title: "По возрастанию цены",
+    param: "price",
+    prop: "asc",
+    icon: "",
+  },
+  {
+    title: "По убыванию цены",
+    param: "price",
+    prop: "desc",
+    icon: "",
+  },
+]
 </script>
 
 <style></style>

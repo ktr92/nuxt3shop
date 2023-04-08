@@ -1,7 +1,9 @@
-@import "tailwindcss/base";
-
 body {
   overflow-y: scroll;
+}
+
+* {
+  @apply outline-none;
 }
 
 a {

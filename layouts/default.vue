@@ -5,6 +5,7 @@
       <Header />
       <div class="pt-2">
         <NavBreadcrumbs
+          v-if="pageConfig.getPageInfo.title != ''"
           :title="pageConfig.getPageInfo.title"
           :link="pageConfig.getPageInfo.link"
         />

@@ -20,7 +20,9 @@ export default defineEventHandler(async (event) => {
       cat_id,
       Number(query.page),
       Number(query.take),
-      Number(query.skip)
+      Number(query.skip),
+      String(query.sort_field),
+      String(query.sort_direction)
     )
 
     if ((category as any).categoryinfo.status) {
