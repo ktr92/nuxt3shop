@@ -1,7 +1,7 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss"
 export default <Partial<Config>>{
   viewer: false,
-  darkMode: 'class',
+  darkMode: "class",
   theme: {
     container: {
       center: true,
@@ -14,14 +14,14 @@ export default <Partial<Config>>{
       xl: "1280px",
     },
     animation: {
-      ping: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;'
+      spin: "spin 1s linear infinite;",
     },
     extend: {
       colors: {
-        reddish: '#eb6864',
-        blackish: '#363636',
-        green: '#61bc00',
-        blue: '#018bc8',
+        reddish: "#eb6864",
+        blackish: "#363636",
+        green: "#61bc00",
+        blue: "#018bc8",
         dim: {
           50: "#5F99F7",
           100: "#5F99F7",
@@ -33,9 +33,8 @@ export default <Partial<Config>>{
           700: "#192734",
           800: "#162d40",
           900: "#15202b",
-        }
-      }
-    }
-
-  }
+        },
+      },
+    },
+  },
 }

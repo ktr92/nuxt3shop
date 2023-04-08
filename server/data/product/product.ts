@@ -36,7 +36,7 @@ export async function getProductsByCategory(
 
   const products = await prisma.oc_product.findMany({
     take: takes,
-    skip: skip,
+    skip: 0,
 
     select: {
       product_id: true,

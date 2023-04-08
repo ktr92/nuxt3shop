@@ -1,10 +1,11 @@
 <template>
-  <div>
-  </div>
+  <div></div>
 </template>
 
 <script setup lang="ts">
-
+definePageMeta({
+  layout: "main",
+})
 </script>
 
 <style></style>

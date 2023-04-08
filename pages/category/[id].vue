@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="container">
-      <div v-if="category">
+    <div class="container relative">
+      <template v-if="category">
         <h1 class="my-8">{{ category.name }}</h1>
         <div v-if="category.products">
           <div class="grid grid-cols-4 gap-3">
@@ -10,20 +10,26 @@
             </div>
           </div>
         </div>
-        <NavShowmore
-          :count="category.products_count._count.product_id"
-          :more="more"
-          @showMore="showMore"
-          @showAll="showAll"
-        ></NavShowmore>
+        <div v-if="pending">
+          <UILoading />
+        </div>
+        <template v-else>
+          <NavShowmore
+            :count="category.products_count._count.product_id"
+            :more="more"
+            @showMore="showMore"
+            @showAll="showAll"
+          ></NavShowmore>
+        </template>
         <div class="content description my-8" v-html="description"></div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
+import { catchClause } from "@babel/types"
 
 const TAKE_NUMBER = 8
 
@@ -42,6 +48,9 @@ const {
   () =>
     `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}`
 )
+
+const pageConfig = useMain()
+pageConfig.setPageInfo(category.value ? category.value.name : "", "#")
 
 if (error.value) {
   throw createError({
@@ -76,7 +85,6 @@ const showMore = () => {
   skip.value = 0
 }
 const showAll = () => {
-  page.value = page.value + 1
   take.value = totalCount.value
   skip.value = 0
 }

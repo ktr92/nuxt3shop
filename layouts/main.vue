@@ -4,17 +4,13 @@
     <template v-else>
       <Header />
       <div class="pt-2">
-        <NavBreadcrumbs
-          :title="pageConfig.getPageInfo.title"
-          :link="pageConfig.getPageInfo.link"
-        />
         <NuxtPage />
       </div>
     </template>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 const isLoading = ref(false)
 
 const pageConfig = useMain()
