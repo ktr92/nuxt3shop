@@ -1,4 +1,3 @@
-import { oc_product } from "@prisma/client"
 import prisma from "../prisma"
 
 export async function getProductsByCategory(
@@ -67,5 +66,13 @@ export async function getProductsByCategory(
     },
     orderBy: [{ [sort_field]: sort_direction }, { product_id: "desc" }],
   })
+
+  /* const products1 = await prisma.$queryRawUnsafe(
+    `SELECT model FROM oc_product WHERE product_id IN (${[
+      ...products_array,
+    ]}) ORDER BY ${sort_field} ASC, product_id DESC`
+  )
+  console.log(products1) */
+
   return { products: { ...products }, products_count }
 }

@@ -53,7 +53,7 @@ const {
   error,
 } = await useFetch<ICategory>(
   () =>
-    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_fiels=${sort_field.value}&sort_direction=${sort_direction.value}`
+    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}`
 )
 
 useServerSeoMeta({
