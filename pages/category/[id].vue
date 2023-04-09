@@ -134,6 +134,12 @@ const sorting = [
     prop: "desc",
     icon: "",
   },
+  {
+    title: "По названию",
+    param: "name",
+    prop: "desc",
+    icon: "",
+  },
 ]
 </script>
 

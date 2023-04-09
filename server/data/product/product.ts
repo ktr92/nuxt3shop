@@ -35,6 +35,23 @@ export async function getProductsByCategory(
     },
   })
 
+  /*  let sort = null
+
+  if (sort_field === "name") {
+    sort = [{ [sort_field as string]: sort_direction }, { product_id: "desc" }]
+  } else {
+    sort = [
+      { oc_product_description: { sort_field: sort_direction } },
+      { product_id: "desc" },
+    ]
+  } */
+
+  /* orderBy: {
+      oc_product_description: {
+        name: 'desc',
+      },
+    }, */
+
   const products = await prisma.oc_product.findMany({
     take: takes,
     skip: 0,
@@ -64,7 +81,17 @@ export async function getProductsByCategory(
         },
       ],
     },
-    orderBy: [{ [sort_field]: sort_direction }, { product_id: "desc" }],
+    orderBy:
+      sort_field === "name"
+        ? [
+            {
+              oc_product_description: {
+                [sort_field as string]: sort_direction,
+              },
+            },
+            { product_id: "desc" },
+          ]
+        : [{ [sort_field as string]: sort_direction }, { product_id: "desc" }],
   })
 
   /* const products1 = await prisma.$queryRawUnsafe(
