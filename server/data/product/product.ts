@@ -52,6 +52,41 @@ export async function getProductsByCategory(
       },
     }, */
 
+  const products1 = await prisma.oc_product_description.findMany({
+    take: takes,
+    skip: 0,
+    select: {
+      name: true,
+      product_id: true,
+      product_description: {
+        select: {
+          product_id: true,
+          status: true,
+          image: true,
+          price: true,
+          sku: true,
+          quantity: true,
+          manufacturer_id: true,
+          sort_order: true,
+        },
+      },
+    },
+    orderBy: [
+      {
+        name: "asc",
+      },
+    ],
+    where: {
+      AND: [
+        {
+          product_id: {
+            in: [...products_array],
+          },
+        },
+      ],
+    },
+  })
+
   const products = await prisma.oc_product.findMany({
     take: takes,
     skip: 0,
@@ -69,6 +104,11 @@ export async function getProductsByCategory(
         select: {
           name: true,
         },
+        orderBy: [
+          {
+            name: "asc",
+          },
+        ],
       },
     },
     where: {
@@ -81,7 +121,8 @@ export async function getProductsByCategory(
         },
       ],
     },
-    orderBy:
+
+    /*  orderBy:
       sort_field === "name"
         ? [
             {
@@ -91,7 +132,7 @@ export async function getProductsByCategory(
             },
             { product_id: "desc" },
           ]
-        : [{ [sort_field as string]: sort_direction }, { product_id: "desc" }],
+        : [{ [sort_field as string]: sort_direction }, { product_id: "desc" }], */
   })
 
   /* const products1 = await prisma.$queryRawUnsafe(
@@ -101,5 +142,5 @@ export async function getProductsByCategory(
   )
   console.log(products1) */
 
-  return { products: { ...products }, products_count }
+  return { products: { ...products1 }, products_count }
 }

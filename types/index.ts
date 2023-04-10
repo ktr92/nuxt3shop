@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client"
+import { Decimal } from "@prisma/client/runtime"
 
 export {}
 
@@ -6,6 +7,10 @@ export {}
 const productWithDescription = Prisma.validator<Prisma.oc_productArgs>()({
   include: { oc_product_description: true },
 })
+const productDescription =
+  Prisma.validator<Prisma.oc_product_descriptionArgs>()({
+    include: { product_description: true },
+  })
 
 const categoryWithDescription = Prisma.validator<Prisma.oc_categoryArgs>()({
   include: { oc_category_description: true },
@@ -24,6 +29,10 @@ declare global {
   type categoryWithDescription = Prisma.oc_categoryGetPayload<
     typeof categoryWithDescription
   >
+  type productDescription = Prisma.oc_product_descriptionGetPayload<
+    typeof productDescription
+  >
+
   //
 
   interface ICategory extends categoryWithDescription {
@@ -34,6 +43,17 @@ declare global {
     meta_description: string
     products: Array<productWithDescription>
     products_count: ICount
+  }
+
+  interface IProducts extends IProductId {
+    name: string
+    status: boolean
+    image: string
+    price: Decimal
+    sku: string
+    quantity: number
+    manufacturer_id: number
+    sort_order: number
   }
 
   interface ICount {
