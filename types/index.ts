@@ -41,7 +41,7 @@ declare global {
     description: string
     meta_title: string
     meta_description: string
-    products: Array<productWithDescription>
+    products: Array<IProducts>
     products_count: ICount
   }
 
