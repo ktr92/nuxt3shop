@@ -11,13 +11,13 @@
         <img
           class="p-4 rounded-t-lg"
           :src="'/' + product.image"
-          :alt="product.oc_product_description[0].name"
+          :alt="product.name"
         />
       </a>
       <div class="px-5 pb-5">
         <a href="#">
           <h5 class="text-md tracking-tight text-gray-900 dark:text-white">
-            {{ product.oc_product_description[0].name }}
+            {{ product.name }}
           </h5>
         </a>
         <div class="absolute bottom-4 w-full left-0 right-0 px-5">
@@ -40,6 +40,6 @@
 
 <script lang="ts" setup>
 const props = defineProps<{
-  product: productWithDescription
+  product: IProducts
 }>()
 </script>
