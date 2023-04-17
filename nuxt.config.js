@@ -15,4 +15,7 @@ export default defineNuxtConfig({
   pinia: {
     autoImports: ["defineStore", "acceptHMRUpdate"],
   },
+  storybook: {
+    // Options
+  },
 })

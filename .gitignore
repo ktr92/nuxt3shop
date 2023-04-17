@@ -8,3 +8,5 @@ node_modules
 dist
 .DS_Store
 public/catalog
+.nuxt-storybook
+storybook-static

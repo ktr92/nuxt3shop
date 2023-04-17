@@ -5,8 +5,16 @@
         <div class="flex items-center justify-between">
           <h1 class="my-8">{{ category.name }}</h1>
           <div class="flex">
-            <UIDropdown title="Сортировка" :items="sorting" @sorting="sort" />
+            <UIDropdown title="Сортировка">
+              <template #components>
+                <UISelect :items="sorting" @dropdownAction="sort" />
+              </template>
+            </UIDropdown>
           </div>
+        </div>
+
+        <div class="flex items-center">
+          <NavFilter :where="where" />
         </div>
 
         <div v-if="category.products">
@@ -46,6 +54,7 @@ const takegrow = ref(TAKE_NUMBER)
 const skip = ref(page.value === 1 ? 0 : (page.value - 1) * take.value)
 const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
+const filters = ref("")
 const {
   data: category,
   pending,
@@ -53,7 +62,7 @@ const {
   error,
 } = await useFetch<ICategory>(
   () =>
-    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}`
+    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&where=${filters.value}`
 )
 
 useServerSeoMeta({
@@ -94,6 +103,41 @@ const more = computed(() => {
   return category.value
     ? totalCount.value - Object.keys(category.value.products).length
     : 0
+})
+
+const where = computed(() => {
+  return [
+    {
+      title: "Наличие",
+      items: [
+        {
+          title: "В наличии",
+          code: "instock",
+          sort: 0,
+          rule: {
+            quantity: {
+              gt: 0,
+            },
+          },
+        },
+        {
+          title: "Нет в наличии",
+          code: "outofstock",
+          sort: 0,
+          rule: {
+            quantity: {
+              lte: 0,
+            },
+          },
+        },
+        {
+          title: "Все",
+          code: "all",
+          sort: -1,
+        },
+      ],
+    },
+  ]
 })
 
 /* const pageChanged = (p: number) => {

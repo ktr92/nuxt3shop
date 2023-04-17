@@ -20,7 +20,8 @@ export default defineEventHandler(async (event) => {
       cat_id,
       Number(query.take),
       String(query.sort_field),
-      String(query.sort_direction)
+      String(query.sort_direction),
+      String(query.filters)
     )
 
     if ((category as any).categoryinfo.status) {

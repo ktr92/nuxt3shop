@@ -12,6 +12,7 @@
     "vue": "latest"
   },
   "devDependencies": {
+    "@nuxtjs/storybook": "^4.3.2",
     "@nuxtjs/tailwindcss": "^6.4.1",
     "nuxt": "^3.2.3",
     "prisma": "^4.11.0",
