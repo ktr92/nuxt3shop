@@ -5,7 +5,7 @@
   >
     <li v-for="item in items">
       <span
-        @click="$emit('dropdownAction', item.param, item.prop)"
+        @click="$emit('dropdownAction', item)"
         class="
           flex
           justify-between

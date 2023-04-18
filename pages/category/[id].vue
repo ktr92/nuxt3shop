@@ -14,7 +14,10 @@
         </div>
 
         <div class="flex items-center">
-          <NavFilter :where="where" />
+          <div v-for="filter in where">
+            <NavFilterItem :filter="filter" @filtering="acceptFilter">
+            </NavFilterItem>
+          </div>
         </div>
 
         <div v-if="category.products">
@@ -54,7 +57,7 @@ const takegrow = ref(TAKE_NUMBER)
 const skip = ref(page.value === 1 ? 0 : (page.value - 1) * take.value)
 const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
-const filters = ref("")
+const filters = ref("{}")
 const {
   data: category,
   pending,
@@ -62,7 +65,7 @@ const {
   error,
 } = await useFetch<ICategory>(
   () =>
-    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&where=${filters.value}`
+    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}`
 )
 
 useServerSeoMeta({
@@ -111,7 +114,7 @@ const where = computed(() => {
       title: "Наличие",
       items: [
         {
-          title: "В наличии",
+          title: "Только в наличии",
           code: "instock",
           sort: 0,
           rule: {
@@ -120,20 +123,12 @@ const where = computed(() => {
             },
           },
         },
-        {
-          title: "Нет в наличии",
-          code: "outofstock",
-          sort: 0,
-          rule: {
-            quantity: {
-              lte: 0,
-            },
-          },
-        },
+
         {
           title: "Все",
           code: "all",
           sort: -1,
+          rule: {},
         },
       ],
     },
@@ -154,9 +149,14 @@ const showAll = () => {
   skip.value = 0
 }
 
-const sort = (field: string, direction: string) => {
-  sort_field.value = field
-  sort_direction.value = direction
+const sort = (item: ISorting) => {
+  sort_field.value = item.param
+  sort_direction.value = item.prop
+}
+
+const acceptFilter = (filter: any) => {
+  const rule = JSON.stringify({ ...filter.rule })
+  filters.value = rule
 }
 
 const sorting = [

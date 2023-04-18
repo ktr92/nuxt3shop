@@ -59,4 +59,9 @@ declare global {
   interface ICount {
     _count: IProductId
   }
+
+  interface ISorting {
+    param: string
+    prop: string
+  }
 }

@@ -2,7 +2,7 @@ import prisma from "../prisma"
 import { productTransformer } from "~~/server/api/transformers/products"
 import { Prisma } from "@prisma/client"
 
-function productsQuery(products: Array<number>, filters: object) {
+function productsQuery(products: Array<number>, filters: string) {
   const product_query = {
     where: {
       AND: [
@@ -11,9 +11,8 @@ function productsQuery(products: Array<number>, filters: object) {
             in: [...products],
           },
         },
-        {
-          ...filters
-        }
+        {...JSON.parse(filters)}
+       
       ],
     },
   }
@@ -52,7 +51,7 @@ export async function getProductsIdByCategory(categoryId: number) {
 
 export async function getProductsCountByCategory(
   products_array: Array<number>,
-  filters: object
+  filters: string
 ) {
   const products_count = await prisma.oc_product.aggregate({
     _count: {
@@ -69,7 +68,7 @@ export async function getProductsCountByCategory(
 export async function getProductsDescriptionByCategory(
   productsPager: any,
   products_array: any,
-  filters: object
+  filters: string
 ) {
   const products = (await prisma.oc_product_description.findMany({
     ...productsPager,
@@ -79,7 +78,7 @@ export async function getProductsDescriptionByCategory(
         select: {
           ...productSelect,
         } satisfies Prisma.oc_productSelect,
-      },
+      } 
     },
     orderBy: [
       {
@@ -87,8 +86,12 @@ export async function getProductsDescriptionByCategory(
       },
     ],
     where: {
-      ...productsQuery(products_array, filters).where,
+      product_description: {
+        ...productsQuery(products_array, filters).where,
+        status: true
+      }
     },
+    distinct: ['product_id'],
   })) as productDescription[]
 
   return products
@@ -98,7 +101,7 @@ export async function getProductsWithDescriptionByCategory(
   products_array: any,
   sort_field: any,
   sort_direction: any,
-  filters: object
+  filters: string
 ) {
   const products = (await prisma.oc_product.findMany({
     ...productsPager,
@@ -114,6 +117,7 @@ export async function getProductsWithDescriptionByCategory(
       ...productsQuery(products_array, filters).where,
       status: true,
     },
+    distinct: ['product_id'],
 
     orderBy: [
       { [sort_field as string]: sort_direction },
@@ -129,7 +133,7 @@ export async function getProductsByCategory(
   takes: number,
   sort_field: string,
   sort_direction: string,
-  filters: object
+  filters: string
 ) {
   const productsPager = {
     take: takes,

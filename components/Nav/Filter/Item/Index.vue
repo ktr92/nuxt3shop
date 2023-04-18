@@ -2,7 +2,10 @@
   <div>
     <UIDropdown :title="filter.title">
       <template #components>
-        <UISelect :items="filter.items"></UISelect>
+        <UISelect
+          :items="filter.items"
+          @dropdownAction="$emit('filtering', $event)"
+        ></UISelect>
       </template>
     </UIDropdown>
   </div>

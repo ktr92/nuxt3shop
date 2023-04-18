@@ -77,7 +77,6 @@ const props = defineProps({
     type: Array<{ title: string; param: string; prop: string; icon: string }>,
   },
 })
-defineEmits(["dropdownAction"])
 const isShown = ref(false)
 const showDropdown = () => {
   isShown.value = !isShown.value
