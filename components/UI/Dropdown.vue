@@ -28,7 +28,9 @@
       type="button"
       @click="showDropdown"
     >
-      <span>{{ title }}</span>
+      <span>
+        <slot name="title"></slot>
+      </span>
       <svg
         class="w-4 h-4 ml-2"
         aria-hidden="true"
@@ -70,9 +72,7 @@
 
 <script lang="ts" setup>
 const props = defineProps({
-  title: {
-    type: String,
-  },
+
   items: {
     type: Array<{ title: string; param: string; prop: string; icon: string }>,
   },

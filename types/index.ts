@@ -60,8 +60,10 @@ declare global {
     _count: IProductId
   }
 
-  interface ISorting {
+  interface ISelect {
     param: string
     prop: string
+    title: string
+    rule?: object
   }
 }

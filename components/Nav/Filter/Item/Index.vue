@@ -1,6 +1,7 @@
 <template>
   <div>
-    <UIDropdown :title="filter.title">
+    <UIDropdown>
+      <template #title>{{ filter.title }} </template>
       <template #components>
         <UISelect
           :items="filter.items"

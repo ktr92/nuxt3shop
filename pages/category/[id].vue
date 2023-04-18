@@ -5,9 +5,14 @@
         <div class="flex items-center justify-between">
           <h1 class="my-8">{{ category.name }}</h1>
           <div class="flex">
-            <UIDropdown title="Сортировка">
+            <UIDropdown>
+              <template #title> {{ sort_title }} </template>
               <template #components>
-                <UISelect :items="sorting" @dropdownAction="sort" />
+                <UISelect
+                  :items="sorting"
+                  :active="sort_active"
+                  @dropdownAction="sort"
+                />
               </template>
             </UIDropdown>
           </div>
@@ -57,6 +62,7 @@ const takegrow = ref(TAKE_NUMBER)
 const skip = ref(page.value === 1 ? 0 : (page.value - 1) * take.value)
 const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
+const sort_title = ref("По умолчанию")
 const filters = ref("{}")
 const {
   data: category,
@@ -108,31 +114,8 @@ const more = computed(() => {
     : 0
 })
 
-const where = computed(() => {
-  return [
-    {
-      title: "Наличие",
-      items: [
-        {
-          title: "Только в наличии",
-          code: "instock",
-          sort: 0,
-          rule: {
-            quantity: {
-              gt: 0,
-            },
-          },
-        },
-
-        {
-          title: "Все",
-          code: "all",
-          sort: -1,
-          rule: {},
-        },
-      ],
-    },
-  ]
+const sort_active = computed(() => {
+  return sort_field.value + sort_direction.value
 })
 
 /* const pageChanged = (p: number) => {
@@ -149,40 +132,64 @@ const showAll = () => {
   skip.value = 0
 }
 
-const sort = (item: ISorting) => {
+const sort = (item: ISelect) => {
   sort_field.value = item.param
   sort_direction.value = item.prop
+  sort_title.value = item.title
 }
 
-const acceptFilter = (filter: any) => {
+const acceptFilter = (filter: ISelect) => {
   const rule = JSON.stringify({ ...filter.rule })
   filters.value = rule
 }
 
-const sorting = [
+const sorting: Array<ISelect> = [
   {
     title: "По умолчанию",
     param: "sort_order",
     prop: "asc",
-    icon: "",
   },
   {
     title: "По возрастанию цены",
     param: "price",
     prop: "asc",
-    icon: "",
   },
   {
     title: "По убыванию цены",
     param: "price",
     prop: "desc",
-    icon: "",
   },
   {
     title: "По названию",
     param: "name",
     prop: "desc",
-    icon: "",
+  },
+]
+
+const where = [
+  {
+    title: "Наличие",
+    items: [
+      {
+        title: "Только в наличии",
+        param: "instock",
+        prop: "",
+        sort: 0,
+        rule: {
+          quantity: {
+            gt: 0,
+          },
+        },
+      },
+
+      {
+        title: "Все",
+        param: "all",
+        prop: "",
+        sort: -1,
+        rule: {},
+      },
+    ],
   },
 ]
 </script>

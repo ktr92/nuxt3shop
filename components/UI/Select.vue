@@ -3,7 +3,10 @@
     class="py-2 text-sm text-gray-700 dark:text-gray-200"
     aria-labelledby="dropdownDefaultButton"
   >
-    <li v-for="item in items">
+    <li
+      v-for="item in items"
+      :class="{ active: item.param + item.prop === active }"
+    >
       <span
         @click="$emit('dropdownAction', item)"
         class="
@@ -21,9 +24,6 @@
         <span>
           {{ item.title }}
         </span>
-        <span v-if="item.icon">
-          {{ item.icon }}
-        </span>
       </span>
     </li>
   </ul>
@@ -32,8 +32,17 @@
 <script lang="ts" setup>
 const prop = defineProps({
   items: {
-    type: Object,
-    reqired: true,
+    type: Array<ISelect>,
+    required: true,
+  },
+  active: {
+    type: String,
+    required: false,
   },
 })
 </script>
+<style scoped>
+li.active {
+  @apply bg-slate-200;
+}
+</style>
