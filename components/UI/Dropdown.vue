@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-64">
+  <div class="relative">
     <button
       id="dropdownDefaultButton"
       data-dropdown-toggle="dropdown"
@@ -28,8 +28,11 @@
       type="button"
       @click="showDropdown"
     >
-      <span>
+      <span class="whitespace-nowrap">
         <slot name="title"></slot>
+      </span>
+      <span class="whitespace-nowrap">
+        <slot name="current"></slot>
       </span>
       <svg
         class="w-4 h-4 ml-2"
@@ -52,10 +55,9 @@
       v-if="isShown"
       id="dropdown"
       class="
-        w-full
         absolute
         top-full
-        right-0
+        left-0
         z-10
         bg-white
         divide-y divide-gray-100

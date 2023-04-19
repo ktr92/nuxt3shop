@@ -18,9 +18,14 @@
           </div>
         </div>
 
-        <div class="flex items-center">
+        <div class="flex items-center mb-4">
           <div v-for="filter in where">
-            <NavFilterItem :filter="filter" @filtering="acceptFilter">
+            <NavFilterItem
+              :filter="filter"
+              :current="currentFilters"
+              @filtering="acceptFilter"
+              @clearFilter="clearFilter"
+            >
             </NavFilterItem>
           </div>
         </div>
@@ -51,6 +56,7 @@
 
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
+import _ from "lodash"
 
 const TAKE_NUMBER = 8
 
@@ -64,6 +70,19 @@ const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
 const sort_title = ref("По умолчанию")
 const filters = ref("{}")
+const currentFilters = ref("")
+const filterSet = ref([] as Array<any>)
+
+const filterFormat = computed(() => {
+  return Object.fromEntries(
+    Object.entries(
+      JSON.parse(
+        "{{%22manufacturer_id%22:{%22equals%22:48}},{%22quantity%22:{%22gt%22:0}}}"
+      )
+    ).map(([k, v]) => [`${"filters[properties]["}${k}]`, `${v}`])
+  )
+})
+
 const {
   data: category,
   pending,
@@ -138,10 +157,131 @@ const sort = (item: ISelect) => {
   sort_title.value = item.title
 }
 
-const acceptFilter = (filter: ISelect) => {
-  const rule = JSON.stringify({ ...filter.rule })
-  filters.value = rule
+const filterSetObj = computed(() => {
+  return _.reduce(
+    filterSet.value.map((item: any) => item.rule),
+    function (memo, current) {
+      return _.assign(memo, current)
+    },
+    {}
+  )
+})
+
+const addFilter = (filter: ISelect) => {
+  filterSet.value.push({
+    code: filter.code,
+    current: filter.title,
+    rule: filter.rule,
+  })
 }
+
+const acceptFilter = (filter: ISelect) => {
+  const isExist = filterSet.value.filter((item) => item.code === filter.code)
+  if (isExist.length === 0) {
+    addFilter(filter)
+  } else {
+    filterSet.value = filterSet.value.filter(
+      (item) => item.code !== filter.code
+    )
+    addFilter(filter)
+  }
+
+  const rule = JSON.stringify({ ...filterSetObj.value })
+  filters.value = rule
+  currentFilters.value = filter.title
+  /*  const rule = JSON.stringify({ ...filter.rule })
+  filters.value = rule
+  currentFilters.value = filter.title */
+}
+
+const clearFilter = (filter: ISelect) => {
+  /*  const fvalue = JSON.stringify(
+    JSON.parse(filters.value).filter(
+      (item: ISelect) => item.param !== filter.param
+    )
+  ) */
+
+  filters.value = "{}"
+  currentFilters.value = ""
+}
+
+/* const filterSet = [
+  {
+    code: "quantity",
+    current: "Только в наличии",
+    rule: {
+      quantity: {
+        gt: 0,
+      },
+    },
+  },
+  {
+    code: "manufacturer_id",
+    current: "Now Foods",
+    rule: {
+      manufacturer_id: {
+        equals: 48,
+      },
+    },
+  },
+] */
+
+const where = [
+  {
+    code: "quantity",
+    title: "Наличие",
+    items: [
+      {
+        title: "Только в наличии",
+        param: "instock",
+        prop: "",
+        sort: 0,
+        code: "quantity",
+        rule: {
+          quantity: {
+            gt: 0,
+          },
+        },
+      },
+
+      {
+        title: "Все",
+        param: "all",
+        code: "quantity",
+        prop: "",
+        sort: -1,
+        rule: {},
+      },
+    ],
+  },
+  {
+    code: "manufacturer_id",
+    title: "Производитель",
+    items: [
+      {
+        title: "Now Foods",
+        param: "nowfoods",
+        code: "manufacturer_id",
+        prop: "",
+        sort: 0,
+        rule: {
+          manufacturer_id: {
+            equals: 48,
+          },
+        },
+      },
+
+      {
+        title: "Все",
+        param: "all",
+        code: "manufacturer_id",
+        prop: "",
+        sort: -1,
+        rule: {},
+      },
+    ],
+  },
+]
 
 const sorting: Array<ISelect> = [
   {
@@ -163,33 +303,6 @@ const sorting: Array<ISelect> = [
     title: "По названию",
     param: "name",
     prop: "desc",
-  },
-]
-
-const where = [
-  {
-    title: "Наличие",
-    items: [
-      {
-        title: "Только в наличии",
-        param: "instock",
-        prop: "",
-        sort: 0,
-        rule: {
-          quantity: {
-            gt: 0,
-          },
-        },
-      },
-
-      {
-        title: "Все",
-        param: "all",
-        prop: "",
-        sort: -1,
-        rule: {},
-      },
-    ],
   },
 ]
 </script>

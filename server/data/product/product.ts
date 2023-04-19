@@ -42,7 +42,9 @@ export async function getProductsIdByCategory(categoryId: number) {
         product_id: true,
       },
       where: {
-        category_id: categoryId,
+        category_id: {
+          equals: categoryId
+        },
       },
     })
   const products_array = products_id.map((item: IProductId) => item.product_id)

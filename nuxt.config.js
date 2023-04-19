@@ -8,7 +8,7 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["stores"],
   },
-  modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
+  modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt", "nuxt-lodash"],
   tailwindcss: {
     viewer: false,
   },
@@ -18,4 +18,5 @@ export default defineNuxtConfig({
   storybook: {
     // Options
   },
+  lodash: {},
 })

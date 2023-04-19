@@ -65,5 +65,6 @@ declare global {
     prop: string
     title: string
     rule?: object
+    code?: string
   }
 }
