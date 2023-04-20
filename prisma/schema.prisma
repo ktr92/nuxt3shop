@@ -978,10 +978,11 @@ model oc_location {
 }
 
 model oc_manufacturer {
-  manufacturer_id Int     @id @default(autoincrement())
-  name            String  @db.VarChar(64)
-  image           String? @db.VarChar(255)
+  manufacturer_id Int          @id @default(autoincrement())
+  name            String       @db.VarChar(64)
+  image           String?      @db.VarChar(255)
   sort_order      Int
+  oc_product      oc_product[]
 }
 
 model oc_manufacturer_description {
@@ -1358,6 +1359,8 @@ model oc_product {
   date_added             DateTime                 @db.DateTime(0)
   date_modified          DateTime                 @db.DateTime(0)
   oc_product_description oc_product_description[]
+
+  manufacturer oc_manufacturer @relation(fields: [manufacturer_id], references: [manufacturer_id])
 
   @@index([ean], map: "ean")
   @@index([isbn], map: "isbn")

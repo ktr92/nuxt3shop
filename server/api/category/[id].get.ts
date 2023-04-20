@@ -3,6 +3,10 @@ import {
   getCategoryInfo,
 } from "~~/server/data/category/category"
 import { getProductsByCategory } from "~~/server/data/product/product"
+import {
+  getManufaturerPath,
+  getManufacturerName,
+} from "~~/server/data/manufacturer/manufacturer"
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)

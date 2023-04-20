@@ -21,8 +21,8 @@
         <div class="flex items-center mb-4">
           <div v-for="filter in where">
             <NavFilterItem
-              :filter="filter"
-              :current="currentFilters"
+              :filterprop="filter"
+              :currentprop="filterSet"
               @filtering="acceptFilter"
               @clearFilter="clearFilter"
             >
@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
-import _ from "lodash"
+import _, { filter } from "lodash"
 
 const TAKE_NUMBER = 8
 
@@ -70,7 +70,6 @@ const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
 const sort_title = ref("По умолчанию")
 const filters = ref("{}")
-const currentFilters = ref("")
 const filterSet = ref([] as Array<any>)
 
 const filterFormat = computed(() => {
@@ -153,7 +152,7 @@ const showAll = () => {
 
 const sort = (item: ISelect) => {
   sort_field.value = item.param
-  sort_direction.value = item.prop
+  sort_direction.value = item.prop as string
   sort_title.value = item.title
 }
 
@@ -167,64 +166,38 @@ const filterSetObj = computed(() => {
   )
 })
 
-const addFilter = (filter: ISelect) => {
-  filterSet.value.push({
+const addFilter = (array: Array<ISelect>, filter: ISelect) => {
+  array.push({
     code: filter.code,
-    current: filter.title,
+    title: filter.title,
     rule: filter.rule,
+    param: filter.param,
   })
 }
 
 const acceptFilter = (filter: ISelect) => {
   const isExist = filterSet.value.filter((item) => item.code === filter.code)
   if (isExist.length === 0) {
-    addFilter(filter)
+    addFilter(filterSet.value, filter)
   } else {
     filterSet.value = filterSet.value.filter(
       (item) => item.code !== filter.code
     )
-    addFilter(filter)
+    addFilter(filterSet.value, filter)
   }
 
   const rule = JSON.stringify({ ...filterSetObj.value })
   filters.value = rule
-  currentFilters.value = filter.title
-  /*  const rule = JSON.stringify({ ...filter.rule })
+}
+
+const clearFilter = (filterprop: ISelect) => {
+  const cleaned = filterSet.value.filter(
+    (item: ISelect) => item.param !== filterprop.param
+  )
+  filterSet.value = cleaned
+  const rule = JSON.stringify({ ...filterSetObj.value })
   filters.value = rule
-  currentFilters.value = filter.title */
 }
-
-const clearFilter = (filter: ISelect) => {
-  /*  const fvalue = JSON.stringify(
-    JSON.parse(filters.value).filter(
-      (item: ISelect) => item.param !== filter.param
-    )
-  ) */
-
-  filters.value = "{}"
-  currentFilters.value = ""
-}
-
-/* const filterSet = [
-  {
-    code: "quantity",
-    current: "Только в наличии",
-    rule: {
-      quantity: {
-        gt: 0,
-      },
-    },
-  },
-  {
-    code: "manufacturer_id",
-    current: "Now Foods",
-    rule: {
-      manufacturer_id: {
-        equals: 48,
-      },
-    },
-  },
-] */
 
 const where = [
   {

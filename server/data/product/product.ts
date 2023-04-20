@@ -28,6 +28,7 @@ const productSelect = {
   quantity: true,
   manufacturer_id: true,
   sort_order: true,
+  manufacturer: true
 }
 
 const descriptionSelect = {

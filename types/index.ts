@@ -62,7 +62,7 @@ declare global {
 
   interface ISelect {
     param: string
-    prop: string
+    prop?: string
     title: string
     rule?: object
     code?: string
