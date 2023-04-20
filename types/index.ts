@@ -5,11 +5,14 @@ export {}
 
 // 1: Define a type that includes the relation to `oc_product_description`
 const productWithDescription = Prisma.validator<Prisma.oc_productArgs>()({
-  include: { oc_product_description: true },
+  include: { oc_product_description: true, manufacturer: true },
 })
+
 const productDescription =
   Prisma.validator<Prisma.oc_product_descriptionArgs>()({
-    include: { product_description: true },
+    include: {
+      product_description: true,
+    },
   })
 
 const categoryWithDescription = Prisma.validator<Prisma.oc_categoryArgs>()({
@@ -54,6 +57,7 @@ declare global {
     quantity: number
     manufacturer_id: number
     sort_order: number
+    manufacturer: string
   }
 
   interface ICount {

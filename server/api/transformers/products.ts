@@ -49,6 +49,15 @@ export const productTransformer = (
       ? item.product_description.manufacturer_id
       : item.manufacturer_id
   }
+  function getItemManufacturerInfo(
+    item: productWithDescription | productDescription
+  ): string {
+    return isTypeDescription(item)
+      ? (item.product_description as productWithDescription).manufacturer.name
+      : /* ? item.product_description.manufacturer.name */
+        item.manufacturer.name
+  }
+
   function getItemQuantity(
     item: productWithDescription | productDescription
   ): number {
@@ -73,6 +82,7 @@ export const productTransformer = (
       price: getItemPrice(item),
       sku: getItemSKU(item),
       manufacturer_id: getItemManufacturer(item),
+      manufacturer: getItemManufacturerInfo(item),
       quantity: getItemQuantity(item),
       sort_order: getItemSort(item),
     }

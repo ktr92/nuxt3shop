@@ -28,7 +28,10 @@ const productSelect = {
   quantity: true,
   manufacturer_id: true,
   sort_order: true,
-  manufacturer: true
+}
+
+const manufacturerSelect = {
+  name: true
 }
 
 const descriptionSelect = {
@@ -80,6 +83,11 @@ export async function getProductsDescriptionByCategory(
       product_description: {
         select: {
           ...productSelect,
+          manufacturer: {
+            select: {
+              ...manufacturerSelect
+            }
+          }
         } satisfies Prisma.oc_productSelect,
       } 
     },
@@ -115,6 +123,11 @@ export async function getProductsWithDescriptionByCategory(
           ...descriptionSelect,
         },
       },
+      manufacturer: {
+        select: {
+          ...manufacturerSelect
+        }
+      }
     },
     where: {
       ...productsQuery(products_array, filters).where,

@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model oc_address {
@@ -1038,8 +1039,10 @@ model oc_mega_menu {
   istitle                     Boolean @default(false)
 
   // submenu
-  parentmenu oc_mega_menu?  @relation("Submenu", fields: [parent_id], references: [id])
+  parentmenu oc_mega_menu?  @relation("Submenu", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   submenu    oc_mega_menu[] @relation("Submenu")
+
+  @@index([parent_id])
 }
 
 model oc_mega_menu_modules {
@@ -1369,6 +1372,7 @@ model oc_product {
   @@index([mpn], map: "mpn")
   @@index([sku], map: "sku")
   @@index([upc], map: "upc")
+  @@index([manufacturer_id])
 }
 
 model oc_product_attribute {
@@ -1394,6 +1398,7 @@ model oc_product_description {
 
   @@id([product_id, language_id])
   @@index([name], map: "name")
+  @@index([product_id])
 }
 
 model oc_product_discount {
@@ -3568,15 +3573,15 @@ enum vtm_recurring_trial_frequency {
 }
 
 model nx_menu {
-  nx_menu_id         Int       @id @default(autoincrement())
-  nx_menu_href       String    @db.VarChar(255)
-  nx_menu_name       String    @db.VarChar(255)
-  nx_menu_isExternal Boolean   @default(false)
-  nx_menu_isParent   Boolean   @default(false)
+  nx_menu_id         Int     @id @default(autoincrement())
+  nx_menu_href       String  @db.VarChar(255)
+  nx_menu_name       String  @db.VarChar(255)
+  nx_menu_isExternal Boolean @default(false)
+  nx_menu_isParent   Boolean @default(false)
   nx_parent_id       Int?
-  nx_parentmenu      nx_menu?  @relation("MenuSubmenu", fields: [nx_parent_id], references: [nx_menu_id])
-  nx_submenu         nx_menu[] @relation("MenuSubmenu")
-  nx_menu_sort       Int       @default(0)
+  // nx_parentmenu      nx_menu?  @relation("MenuSubmenu", fields: [nx_parent_id], references: [nx_menu_id])
+  // nx_submenu         nx_menu[] @relation("MenuSubmenu")
+  nx_menu_sort       Int     @default(0)
 
   @@index([nx_parent_id], map: "nx_menu_nx_parent_id_fkey")
 }
