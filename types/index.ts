@@ -46,6 +46,7 @@ declare global {
     meta_description: string
     products: Array<IProducts>
     products_count: ICount
+    properties: IProperties
   }
 
   interface IProducts extends IProductId {
@@ -70,5 +71,9 @@ declare global {
     title: string
     rule?: object
     code?: string
+  }
+
+  interface IProperties {
+    manufacturer: Array<ISelect>
   }
 }

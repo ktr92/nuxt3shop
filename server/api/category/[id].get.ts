@@ -3,10 +3,6 @@ import {
   getCategoryInfo,
 } from "~~/server/data/category/category"
 import { getProductsByCategory } from "~~/server/data/product/product"
-import {
-  getManufaturerPath,
-  getManufacturerName,
-} from "~~/server/data/manufacturer/manufacturer"
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -20,16 +16,17 @@ export default defineEventHandler(async (event) => {
     // get item from DB through the path
     const category = await getCategoryInfo(cat_id)
 
-    const { products, products_count } = await getProductsByCategory(
-      cat_id,
-      Number(query.take),
-      String(query.sort_field),
-      String(query.sort_direction),
-      query.filters as string
-    )
+    const { products, products_count, properties } =
+      await getProductsByCategory(
+        cat_id,
+        Number(query.take),
+        String(query.sort_field),
+        String(query.sort_direction),
+        query.filters as string
+      )
 
     if ((category as any).categoryinfo.status) {
-      return { ...category, products, products_count }
+      return { ...category, products, products_count, properties }
     }
   }
 

@@ -2,7 +2,7 @@ import prisma from "../prisma"
 import { productTransformer } from "~~/server/api/transformers/products"
 import { Prisma } from "@prisma/client"
 
-function productsQuery(products: Array<number>, filters: string) {
+function productsQuery(products: Array<number>, filters?: string) {
   const product_query = {
     where: {
       AND: [
@@ -11,7 +11,7 @@ function productsQuery(products: Array<number>, filters: string) {
             in: [...products],
           },
         },
-        {...JSON.parse(filters)}
+        {...JSON.parse(filters ? filters : '{}')}
        
       ],
     },
@@ -54,6 +54,43 @@ export async function getProductsIdByCategory(categoryId: number) {
   const products_array = products_id.map((item: IProductId) => item.product_id)
   return products_array
 }
+export async function getPropertiesByCategory(products_array: any) {
+  const manufacturers = await prisma.oc_product.findMany({
+      select: {
+        manufacturer_id: true,
+        manufacturer: {
+          select: {
+            ...manufacturerSelect
+          }
+        }
+      },
+      where: {
+        ...productsQuery(products_array).where,
+        status:true
+      },
+      distinct: ['manufacturer_id'],
+    })
+  
+    const properties: IProperties = {
+      manufacturer: manufacturers.map(item => {
+        const obj: ISelect = {
+          title: item.manufacturer.name,
+          param: String(item.manufacturer_id),
+          code: "manufacturer_id",
+          prop: "",
+          rule: {
+            manufacturer_id: {
+              equals: item.manufacturer_id
+            }
+          }
+        }
+        return obj
+      })
+    }
+    
+  return properties
+}
+
 
 export async function getProductsCountByCategory(
   products_array: Array<number>,
@@ -177,5 +214,7 @@ export async function getProductsByCategory(
     )
   }
 
-  return { products: { ...productTransformer(products) }, products_count }
+  const properties = await getPropertiesByCategory(products_array)
+
+  return { products: { ...productTransformer(products) }, products_count, properties }
 }

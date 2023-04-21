@@ -188,7 +188,7 @@ const clearFilter = (filterprop: ISelect) => {
   filters.value = rule
 }
 
-const where = [
+const where = computed(() => [
   {
     code: "quantity",
     title: "Наличие",
@@ -219,31 +219,9 @@ const where = [
   {
     code: "manufacturer_id",
     title: "Производитель",
-    items: [
-      {
-        title: "Now Foods",
-        param: "nowfoods",
-        code: "manufacturer_id",
-        prop: "",
-        sort: 0,
-        rule: {
-          manufacturer_id: {
-            equals: 48,
-          },
-        },
-      },
-
-      {
-        title: "Все",
-        param: "all",
-        code: "manufacturer_id",
-        prop: "",
-        sort: -1,
-        rule: {},
-      },
-    ],
+    items: category.value?.properties.manufacturer,
   },
-]
+])
 
 const sorting: Array<ISelect> = [
   {
