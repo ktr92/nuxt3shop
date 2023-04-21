@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" v-click-outside="onClickOutside">
     <button
       id="dropdownDefaultButton"
       data-dropdown-toggle="dropdown"
@@ -73,6 +73,7 @@
 </template>
 
 <script lang="ts" setup>
+
 const props = defineProps({
 
   items: {
@@ -82,5 +83,8 @@ const props = defineProps({
 const isShown = ref(false)
 const showDropdown = () => {
   isShown.value = !isShown.value
+}
+const onClickOutside = () => {
+  isShown.value = false
 }
 </script>

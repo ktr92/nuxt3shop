@@ -5,6 +5,17 @@
         <div class="flex items-center justify-between">
           <h1 class="my-8">{{ category.name }}</h1>
           <div class="flex">
+            <div class="flex items-center ml-4">
+              <div v-for="filter in where" class="mr-4">
+                <NavFilterItem
+                  :filterprop="filter"
+                  :currentprop="filterSet"
+                  @filtering="acceptFilter"
+                  @clearFilter="clearFilter"
+                >
+                </NavFilterItem>
+              </div>
+            </div>
             <UIDropdown>
               <template #title> {{ sort_title }} </template>
               <template #components>
@@ -15,18 +26,6 @@
                 />
               </template>
             </UIDropdown>
-          </div>
-        </div>
-
-        <div class="flex items-center mb-4">
-          <div v-for="filter in where">
-            <NavFilterItem
-              :filterprop="filter"
-              :currentprop="filterSet"
-              @filtering="acceptFilter"
-              @clearFilter="clearFilter"
-            >
-            </NavFilterItem>
           </div>
         </div>
 
@@ -56,7 +55,7 @@
 
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
-import _, { filter } from "lodash"
+import _ from "lodash"
 
 const TAKE_NUMBER = 8
 
@@ -71,16 +70,6 @@ const sort_direction = ref("asc")
 const sort_title = ref("По умолчанию")
 const filters = ref("{}")
 const filterSet = ref([] as Array<any>)
-
-const filterFormat = computed(() => {
-  return Object.fromEntries(
-    Object.entries(
-      JSON.parse(
-        "{{%22manufacturer_id%22:{%22equals%22:48}},{%22quantity%22:{%22gt%22:0}}}"
-      )
-    ).map(([k, v]) => [`${"filters[properties]["}${k}]`, `${v}`])
-  )
-})
 
 const {
   data: category,

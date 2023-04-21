@@ -3,5 +3,6 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "lib": ["es5", "es6", "dom", "dom.iterable"]
-  }
+  },
+  "types": ["types/click-outside-vue3.d.ts"]
 }

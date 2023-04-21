@@ -24,6 +24,7 @@
     "@heroicons/vue": "^2.0.16",
     "@pinia/nuxt": "^0.4.8",
     "@prisma/client": "^4.11.0",
+    "click-outside-vue3": "^4.0.1",
     "pinia": "^2.0.34"
   }
 }
