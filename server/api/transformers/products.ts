@@ -1,16 +1,16 @@
 import { Decimal } from "@prisma/client/runtime"
 
 export const productTransformer = (
-  product: Array<productWithDescription | productDescription>
+  product: Array<productWithRelations | productDescription>
 ): Array<IProducts> => {
   function isTypeDescription(
-    value: productWithDescription | productDescription
+    value: productWithRelations | productDescription
   ): value is productDescription {
     return value.hasOwnProperty("name")
   }
 
   function getItemName(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): string {
     return isTypeDescription(item)
       ? item.name
@@ -18,7 +18,7 @@ export const productTransformer = (
   }
 
   function getItemStatus(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): boolean {
     return isTypeDescription(item)
       ? item.product_description.status
@@ -26,47 +26,45 @@ export const productTransformer = (
   }
 
   function getItemImage(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): string {
     return isTypeDescription(item)
       ? item.product_description.image || ""
       : item.image || ""
   }
   function getItemPrice(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): Decimal {
     return isTypeDescription(item) ? item.product_description.price : item.price
   }
-  function getItemSKU(
-    item: productWithDescription | productDescription
-  ): string {
+  function getItemSKU(item: productWithRelations | productDescription): string {
     return isTypeDescription(item) ? item.product_description.sku : item.sku
   }
   function getItemManufacturer(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): number {
     return isTypeDescription(item)
       ? item.product_description.manufacturer_id
       : item.manufacturer_id
   }
   function getItemManufacturerInfo(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): string {
     return isTypeDescription(item)
-      ? (item.product_description as productWithDescription).manufacturer.name
+      ? (item.product_description as productWithRelations).manufacturer.name
       : /* ? item.product_description.manufacturer.name */
         item.manufacturer.name
   }
 
   function getItemQuantity(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): number {
     return isTypeDescription(item)
       ? item.product_description.quantity
       : item.quantity
   }
   function getItemSort(
-    item: productWithDescription | productDescription
+    item: productWithRelations | productDescription
   ): number {
     return isTypeDescription(item)
       ? item.product_description.sort_order

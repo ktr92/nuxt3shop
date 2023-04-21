@@ -4,7 +4,7 @@ import { Decimal } from "@prisma/client/runtime"
 export {}
 
 // 1: Define a type that includes the relation to `oc_product_description`
-const productWithDescription = Prisma.validator<Prisma.oc_productArgs>()({
+const productWithRelations = Prisma.validator<Prisma.oc_productArgs>()({
   include: { oc_product_description: true, manufacturer: true },
 })
 
@@ -15,7 +15,7 @@ const productDescription =
     },
   })
 
-const categoryWithDescription = Prisma.validator<Prisma.oc_categoryArgs>()({
+const categoryWithRelations = Prisma.validator<Prisma.oc_categoryArgs>()({
   include: { oc_category_description: true },
 })
 
@@ -25,12 +25,12 @@ declare global {
   }
 
   // 3: This type will include a Model and all their Relations
-  type productWithDescription = Prisma.oc_productGetPayload<
-    typeof productWithDescription
+  type productWithRelations = Prisma.oc_productGetPayload<
+    typeof productWithRelations
   >
 
-  type categoryWithDescription = Prisma.oc_categoryGetPayload<
-    typeof categoryWithDescription
+  type categoryWithRelations = Prisma.oc_categoryGetPayload<
+    typeof categoryWithRelations
   >
   type productDescription = Prisma.oc_product_descriptionGetPayload<
     typeof productDescription
@@ -38,7 +38,7 @@ declare global {
 
   //
 
-  interface ICategory extends categoryWithDescription {
+  interface ICategory extends categoryWithRelations {
     category_id: number
     name: string
     description: string
@@ -47,6 +47,7 @@ declare global {
     products: Array<IProducts>
     products_count: ICount
     properties: IProperties
+    prices: any
   }
 
   interface IProducts extends IProductId {
@@ -74,6 +75,6 @@ declare global {
   }
 
   interface IProperties {
-    manufacturer: Array<ISelect>
+    manufacturer?: Array<ISelect>
   }
 }

@@ -31,7 +31,7 @@ const productSelect = {
 }
 
 const manufacturerSelect = {
-  name: true
+  name: true,
 }
 
 const descriptionSelect = {
@@ -54,14 +54,15 @@ export async function getProductsIdByCategory(categoryId: number) {
   const products_array = products_id.map((item: IProductId) => item.product_id)
   return products_array
 }
-export async function getPropertiesByCategory(products_array: any) {
+export async function getManufacturersByCategory(products_array: any) {
   const manufacturers = await prisma.oc_product.findMany({
       select: {
         manufacturer_id: true,
         manufacturer: {
           select: {
             ...manufacturerSelect
-          }
+          },
+         
         }
       },
       where: {
@@ -89,6 +90,25 @@ export async function getPropertiesByCategory(products_array: any) {
     }
     
   return properties
+}
+
+export async function getPricesByCategory(
+  products_array: any,
+  filters: string
+) {
+  const prices = await prisma.oc_product.aggregate({
+    where: {
+      ...productsQuery(products_array, filters).where,
+      status:true
+    },
+    _max: {
+      price: true
+    },
+    _min: {
+      price: true
+    }
+  })
+  return prices
 }
 
 
@@ -176,7 +196,7 @@ export async function getProductsWithDescriptionByCategory(
       { [sort_field as string]: sort_direction },
       { product_id: "desc" },
     ],
-  })) as productWithDescription[]
+  })) as productWithRelations[]
 
   return products
 }
@@ -214,7 +234,8 @@ export async function getProductsByCategory(
     )
   }
 
-  const properties = await getPropertiesByCategory(products_array)
+  const properties = await getManufacturersByCategory(products_array)
+  const prices = await getPricesByCategory(products_array, filters)
 
-  return { products: { ...productTransformer(products) }, products_count, properties }
+  return { products: { ...productTransformer(products) }, products_count, properties, prices }
 }

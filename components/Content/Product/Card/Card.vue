@@ -47,6 +47,17 @@
           <span class="text-gray-500 pr-5">Артикул</span>
           <span class="text-gray-800">{{ product.sku }}</span>
         </div>
+        <div class="flex items-center justify-between">
+          <span class="text-gray-500 pr-5">Наличие</span>
+          <span
+            class="text-gray-800"
+            :class="{
+              'text-red-500': product.quantity < 1,
+              'text-green font-semibold': product.quantity > 0,
+            }"
+            >{{ product.quantity > 0 ? "В наличии" : "Нет в наличии" }}</span
+          >
+        </div>
         <div class="absolute bottom-4 w-full left-0 right-0 px-5">
           <div class="flex items-center mt-2.5 mb-5"></div>
           <div class="flex items-center justify-between w-full">
@@ -54,6 +65,7 @@
               >{{ product.price }} ₽</span
             >
             <a
+              v-if="product.quantity > 0"
               href="#"
               class="
                 text-white

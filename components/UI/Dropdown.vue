@@ -63,8 +63,8 @@
         divide-y divide-gray-100
         rounded-lg
         shadow
-        w-44
-        dark:bg-gray-700
+        max-h-80
+        overflow-auto
       "
     >
       <slot name="components"></slot>
