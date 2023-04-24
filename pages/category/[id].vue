@@ -20,7 +20,7 @@
               <UIDropdown>
                 <template #title> Цена </template>
                 <template #components>
-                  <UIRange :values="prices" @filtering="changePrice" />
+                  <UIRange :values="prices" :min='Number(prices[0])' :max='Number(prices[1])'  @filtering="changePrice" />
                 </template>
               </UIDropdown>
             </div>
@@ -80,6 +80,7 @@ const sort_direction = ref("asc")
 const sort_title = ref("По умолчанию")
 const filters = ref("{}")
 const filterSet = ref([] as Array<any>)
+const pricesArr = ref([])
 
 const {
   data: category,
@@ -88,7 +89,7 @@ const {
   error,
 } = await useFetch<ICategory>(
   () =>
-    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}&pricefilter=${filters.value}`
+    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}`
 )
 
 useServerSeoMeta({
@@ -169,12 +170,12 @@ const filterSetObj = computed(() => {
   )
 })
 
-const addFilter = (array: Array<ISelect>, filter: ISelect) => {
+const addFilter = (array: Array<ISelect>, filter?: ISelect) => {
   array.push({
-    code: filter.code,
-    title: filter.title,
-    rule: filter.rule,
-    param: filter.param,
+    code: filter?.code || '',
+    title: filter?.title || '',
+    rule: filter?.rule || {},
+    param: filter?.param || '',
   })
 }
 
@@ -195,7 +196,27 @@ const acceptFilter = (filter: ISelect) => {
   filters.value = rule
 }
 
-const changePrice = (prices: Array<number>) => {}
+const changePrice = (pricesParam: Array<number>) => {
+
+  filterSet.value = filterSet.value.filter(
+    (item) => item.code !== "price"
+  )
+  addFilter(filterSet.value, {
+    code: "price",
+    title: '',
+    rule: {
+      price: {
+        lte: Number(pricesParam[1]),     
+        gte: Number(pricesParam[0]),
+      },
+    },
+    param: "_max"
+  })
+ 
+   
+  const rule = JSON.stringify({ ...filterSetObj.value })
+  filters.value = rule
+}
 
 const clearFilter = (filterprop: ISelect) => {
   const cleaned = filterSet.value.filter(
@@ -247,33 +268,35 @@ const where = computed(() => [
 ])
 
 const priceFilter = {
-  code: "price",
-  title: "Цена",
-  items: [
-    {
-      title: "Цена выше чем",
-      param: "_min",
-      prop: "",
-      code: "price",
-      rule: {
-        price: {
-          gt: 100,
+   
+    code: "price",
+    title: "Цена",
+    items: [
+      {
+        title: "Цена выше чем",
+        param: "_min",
+        prop: "",
+        code: "price_min",
+        rule: {
+          price: {
+            gte: Number(prices.value[0]),
+          },
         },
       },
-    },
-    {
-      title: "Цена меньше чем",
-      param: "_max",
-      prop: "",
-      code: "price",
-      rule: {
-        price: {
-          lt: 999,
+      {
+        title: "Цена меньше чем",
+        param: "_max",
+        prop: "",
+        code: "price_max",
+        rule: {
+          price: {
+            lte: Number(prices.value[1]),
+          },
         },
       },
-    },
-  ],
-}
+    ]
+   }
+
 
 const sorting: Array<ISelect> = [
   {

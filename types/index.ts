@@ -38,10 +38,10 @@ declare global {
 
   //
 
-  interface IproductWithRelations extends productWithRelations {
+  interface IproductRelIndexable extends productWithRelations {
     [property: string]: any
   }
-  interface IproductDescription extends productDescription {
+  interface IproductDescriptionIndexable extends productDescription {
     [property: string]: any
   }
 

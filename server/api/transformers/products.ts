@@ -1,20 +1,18 @@
-import { Decimal } from "@prisma/client/runtime"
-
 export const productTransformer = (
-  product: Array<productWithRelations | productDescription>
+  product: Array<IproductRelIndexable | IproductDescriptionIndexable>
 ): Array<IProducts> => {
   function isTypeDescription(
-    value: IproductDescription | IproductWithRelations
-  ): value is IproductDescription {
+    value: IproductDescriptionIndexable | IproductRelIndexable
+  ): value is IproductDescriptionIndexable {
     return value.hasOwnProperty("name")
   }
 
   function getItem(
-    item: IproductDescription | IproductWithRelations,
+    item: IproductDescriptionIndexable | IproductRelIndexable,
     property: string
   ) {
     return isTypeDescription(item)
-      ? (item.product_description as IproductWithRelations)[property]
+      ? (item.product_description as IproductRelIndexable)[property]
       : item[property]
   }
 

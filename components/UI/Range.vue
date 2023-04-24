@@ -2,9 +2,9 @@
   <div class="w-64 h-20 px-6 pt-12">
     <Slider
       v-model="value"
-      :min="value[0]"
-      :max="value[1]"
-      @change="filtering"
+      :min="min"
+      :max="max"
+      @update="filtering(value)"
     />
   </div>
 </template>
@@ -17,8 +17,32 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  max: {
+    type: Number,
+    default: 0
+  }, 
+  min: {
+    type: Number,
+    default: 99999
+  }
+})  
+const value = ref('')
+
+const emit = defineEmits(['filtering'])
+
+onMounted(() => {
+   value.value = [...props.values].map((item) => Number(item))
 })
-const value = [...props.values].map((item) => Number(item))
+
+
+let  timeout = null
+const filtering = (value) => {
+  if (timeout) {
+    clearTimeout(timeout)
+  }
+  timeout = setTimeout(() => { emit('filtering', value) }, 1000)
+}
+
 </script>
 
 <style src="@vueform/slider/themes/default.css"></style>
