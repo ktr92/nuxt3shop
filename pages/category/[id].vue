@@ -19,8 +19,18 @@
             <div class="flex items-center mr-4">
               <UIDropdown>
                 <template #title> Цена </template>
+                <template #current v-if="prices?.length">
+                  <span class='flex bg-slate-400 rounded ml-2 pl-1 pr-1'>
+                      <span class="flex text-white">{{ prices[0] }}</span>
+                    <span class="flex text-white px-2"> - </span>
+                      <span class="flex text-white">{{ prices[1] }}</span>
+                    <span class="flex" @click="clearPriceFilter" v-if='priceClearable'>
+                        <XMarkIcon class="w-5 h-5 stroke-white"  />
+                    </span>
+                  </span>
+                </template>
                 <template #components>
-                  <UIRange :values="prices" :min='Number(prices[0])' :max='Number(prices[1])'  @filtering="changePrice" />
+                  <UIRange :values="prices" :min='priceMin' :max='priceMax'  @filtering="changePrice" />
                 </template>
               </UIDropdown>
             </div>
@@ -66,6 +76,7 @@
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
 import _ from "lodash"
+import { XMarkIcon } from "@heroicons/vue/24/outline"
 
 const TAKE_NUMBER = 8
 
@@ -80,7 +91,8 @@ const sort_direction = ref("asc")
 const sort_title = ref("По умолчанию")
 const filters = ref("{}")
 const filterSet = ref([] as Array<any>)
-const pricesArr = ref([])
+const priceMin = ref(0)
+const priceMax = ref(0)
 
 const {
   data: category,
@@ -136,9 +148,18 @@ const sort_active = computed(() => {
   return sort_field.value + sort_direction.value
 })
 
+const priceClearable = computed(() => {
+  return Number(prices.value[0]) !== priceMin.value || Number(prices.value[1]) !== priceMax.value
+})
+
 /* const pageChanged = (p: number) => {
   page.value = p
 } */
+
+onMounted(() => {
+  priceMin.value = Number(prices.value[0])
+  priceMax.value = Number(prices.value[1])
+})
 
 const showMore = () => {
   page.value = page.value + 1
@@ -203,7 +224,7 @@ const changePrice = (pricesParam: Array<number>) => {
   )
   addFilter(filterSet.value, {
     code: "price",
-    title: '',
+    title: pricesParam[0] + ' - ' + pricesParam[1],
     rule: {
       price: {
         lte: Number(pricesParam[1]),     
@@ -216,6 +237,10 @@ const changePrice = (pricesParam: Array<number>) => {
    
   const rule = JSON.stringify({ ...filterSetObj.value })
   filters.value = rule
+}
+
+const clearPriceFilter = () => {
+  changePrice([priceMin.value, priceMax.value])
 }
 
 const clearFilter = (filterprop: ISelect) => {
@@ -273,7 +298,7 @@ const priceFilter = {
     title: "Цена",
     items: [
       {
-        title: "Цена выше чем",
+        title: prices.value[0],
         param: "_min",
         prop: "",
         code: "price_min",
@@ -284,7 +309,7 @@ const priceFilter = {
         },
       },
       {
-        title: "Цена меньше чем",
+        title: prices.value[1],
         param: "_max",
         prop: "",
         code: "price_max",
