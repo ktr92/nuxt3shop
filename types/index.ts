@@ -38,6 +38,13 @@ declare global {
 
   //
 
+  interface IproductWithRelations extends productWithRelations {
+    [property: string]: any
+  }
+  interface IproductDescription extends productDescription {
+    [property: string]: any
+  }
+
   interface ICategory extends categoryWithRelations {
     category_id: number
     name: string
@@ -59,7 +66,7 @@ declare global {
     quantity: number
     manufacturer_id: number
     sort_order: number
-    manufacturer: string
+    manufacturer: any
   }
 
   interface ICount {

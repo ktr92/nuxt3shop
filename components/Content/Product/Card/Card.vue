@@ -41,7 +41,7 @@
         </a>
         <div class="flex items-center justify-between">
           <span class="text-gray-500 pr-5">Производитель</span>
-          <span class="text-gray-800">{{ product.manufacturer }}</span>
+          <span class="text-gray-800">{{ product.manufacturer.name }}</span>
         </div>
         <div class="flex items-center justify-between">
           <span class="text-gray-500 pr-5">Артикул</span>
