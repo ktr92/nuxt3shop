@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma, oc_product_description } from "@prisma/client"
 import { Decimal } from "@prisma/client/runtime"
 
 export {}
@@ -41,7 +41,10 @@ declare global {
   interface IproductRelIndexable extends productWithRelations {
     [property: string]: any
   }
-  interface IproductDescriptionIndexable extends productDescription {
+  interface IproductDescriptionRelIndexable extends productDescription {
+    [property: string]: any
+  }
+  interface IproductDescriptionIndexable extends oc_product_description {
     [property: string]: any
   }
 

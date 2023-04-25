@@ -1,10 +1,28 @@
-export const productTransformer = (
+import { ProductProperties } from "../../data/enums/product.enums"
+export const productTransformer = <T>(
   product: Array<IproductRelIndexable | IproductDescriptionIndexable>
-): Array<IProducts> => {
+): Array<T> => {
   function isTypeDescription(
     value: IproductDescriptionIndexable | IproductRelIndexable
-  ): value is IproductDescriptionIndexable {
+  ): value is productDescription {
     return value.hasOwnProperty("name")
+  }
+
+  function getOwnProperty(
+    item: IproductDescriptionIndexable | IproductRelIndexable,
+    property: string
+  ) {
+    return item[property]
+      ? item[property]
+      : item.oc_product_description[0][property]
+  }
+  function getRelatedProperty(
+    item: IproductDescriptionIndexable | IproductRelIndexable,
+    property: string
+  ) {
+    return (item.product_description as IproductRelIndexable)[property]
+      ? (item.product_description as IproductRelIndexable)[property]
+      : item[property]
   }
 
   function getItem(
@@ -12,22 +30,30 @@ export const productTransformer = (
     property: string
   ) {
     return isTypeDescription(item)
-      ? (item.product_description as IproductRelIndexable)[property]
-      : item[property]
+      ? getRelatedProperty(item, property)
+      : getOwnProperty(item, property)
   }
 
-  const result = product.map((item): IProducts => {
-    return {
+  const result = product.map((item): T => {
+    /*  return {
       product_id: item.product_id,
-      name: getItem(item, "name"),
-      status: getItem(item, "status"),
-      image: getItem(item, "image"),
-      price: getItem(item, "price"),
-      sku: getItem(item, "sku"),
-      manufacturer_id: getItem(item, "manufacturer_id"),
-      manufacturer: getItem(item, "manufacturer"),
-      quantity: getItem(item, "quantity"),
-      sort_order: getItem(item, "sort_order"),
+      name: getItem(item, ProductProperties.name),
+      status: getItem(item, ProductProperties.status),
+      image: getItem(item, ProductProperties.image),
+      price: getItem(item, ProductProperties.price),
+      sku: getItem(item, ProductProperties.sku),
+      manufacturer_id: getItem(item, ProductProperties.manufacturer_id),
+      manufacturer: getItem(item, ProductProperties.manufacturer),
+      quantity: getItem(item, ProductProperties.quantity),
+      sort_order: getItem(item, ProductProperties.sort_order),
+    } as T */
+    return {
+      ...(Object.fromEntries(
+        Object.values(ProductProperties).map((val) => [
+          val,
+          getItem(item, ProductProperties[val]),
+        ])
+      ) as T),
     }
   })
   return result

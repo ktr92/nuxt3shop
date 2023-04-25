@@ -237,5 +237,5 @@ export async function getProductsByCategory(
   const properties = await getManufacturersByCategory(products_array)
   const prices = await getPricesByCategory(products_array, filters)
 
-  return { products: { ...productTransformer(products) }, products_count, properties, prices }
+  return { products: { ...productTransformer<IProducts>(products) }, products_count, properties, prices }
 }
