@@ -2,44 +2,39 @@ import prisma from "../prisma"
 import { productTransformer } from "~~/server/api/transformers/products"
 import { Prisma } from "@prisma/client"
 
-function productsQuery(products: Array<number>, filters?: string) {
+import {productSelect, manufacturerSelect, descriptionSelect} from '../const/product.const'
+
+
+function productsById(products: Array<number>) {
   const product_query = {
-    where: {
-      AND: [
-        {
-          product_id: {
-            in: [...products],
-          },
-        },
-        {...JSON.parse(filters ? filters : '{}')}
-       
-      ],
+    product_id: {
+      in: [...products],
     },
   }
   return product_query
 }
 
-const productSelect = {
-  product_id: true,
-  status: true,
-  image: true,
-  price: true,
-  sku: true,
-  quantity: true,
-  manufacturer_id: true,
-  sort_order: true,
+function productsByFilter(filters: string) {
+  const product_query = 
+     {...JSON.parse(filters ? filters : '{}')}
+  return product_query
 }
 
-const manufacturerSelect = {
-  name: true,
+async function getProductsIdByFilter(filter: any) {
+  const products_id: Array<IProductId> =
+    await prisma.oc_product.findMany({
+      select: {
+        product_id: true,
+      },
+      where: {
+        ...productsByFilter(filter)
+      }
+    })
+  const products_array = products_id.map((item: IProductId) => item.product_id)
+  return products_array
 }
 
-const descriptionSelect = {
-  name: true,
-  product_id: true,
-}
-
-export async function getProductsIdByCategory(categoryId: number) {
+async function getProductsIdByCategory(categoryId: number) {
   const products_id: Array<IProductId> =
     await prisma.oc_product_to_category.findMany({
       select: {
@@ -54,7 +49,7 @@ export async function getProductsIdByCategory(categoryId: number) {
   const products_array = products_id.map((item: IProductId) => item.product_id)
   return products_array
 }
-export async function getManufacturersByCategory(products_array: any) {
+async function getManufacturersById(products_array: any, filters?:string, ) {
   const manufacturers = await prisma.oc_product.findMany({
       select: {
         manufacturer_id: true,
@@ -62,11 +57,13 @@ export async function getManufacturersByCategory(products_array: any) {
           select: {
             ...manufacturerSelect
           },
-         
         }
       },
       where: {
-        ...productsQuery(products_array).where,
+        AND: [
+          { ...productsById(products_array) },
+          filters ? { ...productsByFilter(filters) } : {}
+        ],
         status:true
       },
       distinct: ['manufacturer_id'],
@@ -92,13 +89,17 @@ export async function getManufacturersByCategory(products_array: any) {
   return properties
 }
 
-export async function getPricesByCategory(
+async function getPricesById(
   products_array: any,
-  filters: string
+  filters?: string,
+
 ) {
   const prices = await prisma.oc_product.aggregate({
     where: {
-      ...productsQuery(products_array, filters).where,
+      AND: [
+        { ...productsById(products_array) },
+        filters ? { ...productsByFilter(filters) } : {}
+      ],
       status:true
     },
     _max: {
@@ -112,26 +113,30 @@ export async function getPricesByCategory(
 }
 
 
-export async function getProductsCountByCategory(
-  products_array: Array<number>,
-  filters: string
+const getProductsCountById = async function (
+  filters: string,
+  products_array: Array<number>
 ) {
   const products_count = await prisma.oc_product.aggregate({
     _count: {
       product_id: true,
     },
     where: {
-      ...productsQuery(products_array, filters).where,
+      AND: [
+        { ...productsById(products_array) } ,
+        { ...productsByFilter(filters) }
+      ],
       status: true,
     },
   })
   return products_count
 }
 
-export async function getProductsDescriptionByCategory(
+
+const getProductsDescriptionById = async function(
   productsPager: any,
-  products_array: any,
-  filters: string
+  filters: string,
+  products_array: Array<number>,
 ) {
   const products = (await prisma.oc_product_description.findMany({
     ...productsPager,
@@ -155,7 +160,10 @@ export async function getProductsDescriptionByCategory(
     ],
     where: {
       product_description: {
-        ...productsQuery(products_array, filters).where,
+        AND: [
+          { ...productsById(products_array) },
+          { ...productsByFilter(filters) }
+        ],
         status: true
       }
     },
@@ -164,12 +172,13 @@ export async function getProductsDescriptionByCategory(
 
   return products
 }
-export async function getProductsWithDescriptionByCategory(
+async function getProductsWithDescriptionById(
   productsPager: any,
-  products_array: any,
   sort_field: any,
   sort_direction: any,
-  filters: string
+  filters: string,
+  products_array?: any,
+
 ) {
   const products = (await prisma.oc_product.findMany({
     ...productsPager,
@@ -187,7 +196,10 @@ export async function getProductsWithDescriptionByCategory(
       }
     },
     where: {
-      ...productsQuery(products_array, filters).where,
+      AND: [
+        products_array ? { ...productsById(products_array) } : {},
+        { ...productsByFilter(filters) }
+      ],
       status: true,
     },
     distinct: ['product_id'],
@@ -201,41 +213,54 @@ export async function getProductsWithDescriptionByCategory(
   return products
 }
 
-export async function getProductsByCategory(
-  categoryId: number,
+export async function getProductsByFilter(
   takes: number,
   sort_field: string,
   sort_direction: string,
-  filters: string
+  filters: string,
+  categoryId?: number
 ) {
   const productsPager = {
     take: takes,
     skip: 0,
   }
 
-  const products_array = await getProductsIdByCategory(categoryId)
-  const products_count = await getProductsCountByCategory(products_array, filters)
+  let products_array = null
+  let prices = null
+  let properties = null
 
+  if (categoryId) {
+    products_array = await getProductsIdByCategory(categoryId)
+    prices = await getPricesById(products_array, filters)
+    properties = await getManufacturersById(products_array, filters)
+
+  } else {
+    products_array = await getProductsIdByFilter(filters)
+    prices = await getPricesById(products_array)
+    properties = await getManufacturersById(products_array)
+  }
+  const products_count = await getProductsCountById(filters, products_array)
+  
   let products = null
 
   if (sort_field === "name") {
-    products = await getProductsDescriptionByCategory(
+    products = await getProductsDescriptionById(
       productsPager,
-      products_array,
-      filters
+      filters,
+      products_array
     )
   } else {
-    products = await getProductsWithDescriptionByCategory(
+    products = await getProductsWithDescriptionById(
       productsPager,
-      products_array,
       sort_field,
       sort_direction,
-      filters
+      filters,
+      products_array
     )
-  }
+  } 
 
-  const properties = await getManufacturersByCategory(products_array)
-  const prices = await getPricesByCategory(products_array, filters)
+
+
 
   return { products: { ...productTransformer<IProducts>(products) }, products_count, properties, prices }
 }

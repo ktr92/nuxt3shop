@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -1373,6 +1374,7 @@ model oc_product {
   @@index([sku], map: "sku")
   @@index([upc], map: "upc")
   @@index([manufacturer_id])
+  @@fulltext([model])
 }
 
 model oc_product_attribute {

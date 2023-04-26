@@ -2,7 +2,7 @@ import {
   getCategoryPath,
   getCategoryInfo,
 } from "~~/server/data/category/category"
-import { getProductsByCategory } from "~~/server/data/product/product"
+import { getProductsByFilter } from "~~/server/data/product/product"
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -17,12 +17,12 @@ export default defineEventHandler(async (event) => {
     const category = await getCategoryInfo(cat_id)
 
     const { products, products_count, properties, prices } =
-      await getProductsByCategory(
-        cat_id,
+      await getProductsByFilter(
         Number(query.take),
         String(query.sort_field),
         String(query.sort_direction),
-        query.filters as string
+        query.filters as string,
+        cat_id
       )
 
     if ((category as any).categoryinfo.status) {

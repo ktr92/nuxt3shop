@@ -6,7 +6,7 @@
 const { number } = defineProps({
   number: {
     type: String,
-    default: ''
-  }
+    default: "",
+  },
 })
 </script>
