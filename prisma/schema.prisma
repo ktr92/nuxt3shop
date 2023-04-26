@@ -1375,6 +1375,7 @@ model oc_product {
   @@index([upc], map: "upc")
   @@index([manufacturer_id])
   @@fulltext([model])
+  @@fulltext([sku])
 }
 
 model oc_product_attribute {
@@ -1401,6 +1402,8 @@ model oc_product_description {
   @@id([product_id, language_id])
   @@index([name], map: "name")
   @@index([product_id])
+  @@fulltext([name])
+  @@fulltext([meta_keyword])
 }
 
 model oc_product_discount {

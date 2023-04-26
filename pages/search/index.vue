@@ -82,14 +82,11 @@
 </template>
 
 <script setup lang="ts">
-import { decodeHtmlCharCodes } from "@/utils/htmldecode"
 import _ from "lodash"
 import { XMarkIcon } from "@heroicons/vue/24/outline"
 
 const TAKE_NUMBER = 8
-
 const route = useRoute()
-
 const page = ref(1)
 const take = ref(TAKE_NUMBER)
 const takegrow = ref(TAKE_NUMBER)
@@ -101,6 +98,8 @@ const filters = ref("{}")
 const filterSet = ref([] as Array<any>)
 const priceMin = ref(0)
 const priceMax = ref(0)
+
+const keyword = ref("")
 
 const {
   data: category,
@@ -162,7 +161,8 @@ const priceClearable = computed(() => {
 onMounted(() => {
   priceMin.value = Number(prices.value[0])
   priceMax.value = Number(prices.value[1])
-  addFilter(filterSet.value, searchExample.items[0])
+  keyword.value = route.query.keyword as string
+  addFilter(filterSet.value, searchExample.value.items[0])
   const rule = JSON.stringify({ ...filterSetObj.value })
   filters.value = rule
 })
@@ -341,23 +341,52 @@ const sorting: Array<ISelect> = [
   },
 ]
 
-const searchExample = {
-  code: "model",
-  title: "ss",
-  items: [
-    {
-      title: "model",
-      param: "model",
-      prop: "model",
-      code: "model",
-      rule: {
-        model: {
-          search: "+Iron",
+const searchExample = computed(() => {
+  return {
+    code: "searh",
+    title: "searh",
+    items: [
+      {
+        title: "searh",
+        param: "searh",
+        prop: "searh",
+        code: "searh",
+        rule: {
+          OR: [
+            {
+              sku: {
+                contains: keyword.value.replace(/\s+$/, ""),
+              },
+            },
+            {
+              model: {
+                contains: " " + keyword.value.replace(/\s+$/, ""),
+              },
+            },
+            {
+              oc_product_description: {
+                some: {
+                  OR: [
+                    {
+                      name: {
+                        contains: " " + keyword.value.replace(/\s+$/, ""),
+                      },
+                    },
+                    {
+                      meta_keyword: {
+                        contains: " " + keyword.value.replace(/\s+$/, ""),
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ],
         },
       },
-    },
-  ],
-}
+    ],
+  }
+})
 </script>
 
 <style></style>
