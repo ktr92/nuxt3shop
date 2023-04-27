@@ -2,7 +2,7 @@
   <div>
     <div class="header__button pl-4 relative">
       <div class="searchinput">
-        <UIInput v-model="query"></UIInput>
+        <UIInput v-model="query" @onEnter="gotoSearch"></UIInput>
       </div>
       <div class="absolute right-2 top-2 cursor-pointer" @click="gotoSearch">
         <MagnifyingGlassIcon class="w-6 h-6 stroke-slate-500" />

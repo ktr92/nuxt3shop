@@ -248,7 +248,6 @@ export async function getProductsByFilter(
   } else {
    
     products_array = await getProductsIdByFilter(filters, keyword)
-    console.log("SEARCH: ", products_array)
     prices = await getPricesById(products_array)
     properties = await getManufacturersById(products_array)
   }
