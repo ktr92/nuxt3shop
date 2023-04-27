@@ -19,15 +19,25 @@ function productsByFilter(filters: string) {
      {...JSON.parse(filters ? filters : '{}')}
   return product_query
 }
+function productsByKeywords(keyword: any) {
+  const product_query = 
+     {...JSON.parse(keyword)}
+  return product_query
+}
 
-async function getProductsIdByFilter(filter: any) {
+async function getProductsIdByFilter(filter: any, keyword?: any) {
   const products_id: Array<IProductId> =
     await prisma.oc_product.findMany({
       select: {
         product_id: true,
       },
       where: {
-        ...productsByFilter(filter)
+        AND: [
+          {
+            ...productsByFilter(filter),
+          },
+          keyword ? {...productsByKeywords(keyword)} : {}
+        ]
       }
     })
   const products_array = products_id.map((item: IProductId) => item.product_id)
@@ -218,7 +228,8 @@ export async function getProductsByFilter(
   sort_field: string,
   sort_direction: string,
   filters: string,
-  categoryId?: number
+  categoryId?: number | undefined,
+  keyword?: string
 ) {
   const productsPager = {
     take: takes,
@@ -235,7 +246,9 @@ export async function getProductsByFilter(
     properties = await getManufacturersById(products_array, filters)
 
   } else {
-    products_array = await getProductsIdByFilter(filters)
+   
+    products_array = await getProductsIdByFilter(filters, keyword)
+    console.log("SEARCH: ", products_array)
     prices = await getPricesById(products_array)
     properties = await getManufacturersById(products_array)
   }

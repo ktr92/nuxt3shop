@@ -8,7 +8,9 @@ export default defineEventHandler(async (event) => {
       Number(query.take),
       String(query.sort_field),
       String(query.sort_direction),
-      query.filters as string
+      query.filters as string,
+      undefined,
+      query.search as string
     )
 
   return { products, products_count, properties, prices }

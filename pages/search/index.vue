@@ -108,7 +108,7 @@ const {
   error,
 } = await useFetch<ICategory>(
   () =>
-    `/api/search/?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}`
+    `/api/search/?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}&search=${route.query.keyword}`
 )
 
 useServerSeoMeta({
@@ -161,10 +161,10 @@ const priceClearable = computed(() => {
 onMounted(() => {
   priceMin.value = Number(prices.value[0])
   priceMax.value = Number(prices.value[1])
-  keyword.value = route.query.keyword as string
+  /*  keyword.value = route.query.keyword as string
   addFilter(filterSet.value, searchExample.value.items[0])
   const rule = JSON.stringify({ ...filterSetObj.value })
-  filters.value = rule
+  filters.value = rule */
 })
 
 const showMore = () => {
@@ -340,53 +340,6 @@ const sorting: Array<ISelect> = [
     prop: "desc",
   },
 ]
-
-const searchExample = computed(() => {
-  return {
-    code: "searh",
-    title: "searh",
-    items: [
-      {
-        title: "searh",
-        param: "searh",
-        prop: "searh",
-        code: "searh",
-        rule: {
-          OR: [
-            {
-              sku: {
-                contains: keyword.value.replace(/\s+$/, ""),
-              },
-            },
-            {
-              model: {
-                contains: " " + keyword.value.replace(/\s+$/, ""),
-              },
-            },
-            {
-              oc_product_description: {
-                some: {
-                  OR: [
-                    {
-                      name: {
-                        contains: " " + keyword.value.replace(/\s+$/, ""),
-                      },
-                    },
-                    {
-                      meta_keyword: {
-                        contains: " " + keyword.value.replace(/\s+$/, ""),
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-      },
-    ],
-  }
-})
 </script>
 
 <style></style>
