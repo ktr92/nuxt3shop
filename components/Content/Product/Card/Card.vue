@@ -90,8 +90,13 @@
 </template>
 
 <script lang="ts" setup>
-const props =
-  defineProps<{
-    product: IProducts
-  }>()
+interface ICard {
+  product: IProducts,
+  cardtype?: string
+}
+const props = withDefaults(defineProps<ICard>(), {
+    cardtype: ''
+})
+
+
 </script>
