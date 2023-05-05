@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline"
 import _ from "lodash"
+import { _AsyncData } from "nuxt/dist/app/composables/asyncData"
 
 const query = ref("")
 const router = useRouter()
@@ -33,18 +34,29 @@ let productsList: IProducts[] | undefined = reactive([])
  */
 const livesearch = async () => {
  if (query.value.length > 2) {
-    productsList = []
-    const {
-      data: products,
-      pending,
-      refresh,
-      error,
-    } = await useFetch<ICategory>(
-      () =>
-      `/api/search/?page=1&take=3&skip=0&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&search=${keywordQuery.value}`
-    )
-    productsList = products.value?.products
+  try {
+      productsList = []
+      const { products } = await livesearch_v2()
+      productsList = products
+  } catch (error) {
+    
+  }
+    
  }
+}
+
+const livesearch_v2 = (): Promise<ICategory> => {
+  return new Promise(async (resolve, reject) => {
+      try {
+        const {data: response} = await useFetch<ICategory>(
+        () =>
+        `/api/search/?page=1&take=3&skip=0&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&search=${keywordQuery.value}`
+      )
+      resolve(response)
+    } catch (error) {
+      reject(error)
+    }
+  }) 
 }
 
 
