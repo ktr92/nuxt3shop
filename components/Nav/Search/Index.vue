@@ -1,18 +1,30 @@
 <template>
   <div>
-    <div class="header__button pl-4 relative">
+    <div class="header__button  relative">
       <div class="searchinput">
         <UIInput v-model="query" @onEnter="gotoSearch" @input='livesearch'></UIInput>
       </div>
       <div class="absolute right-2 top-2 cursor-pointer" @click="gotoSearch">
         <MagnifyingGlassIcon class="w-6 h-6 stroke-slate-500" />
       </div>
-      <div class='absolute w-full left-0 top-full bg-white p-2' v-if='productsList'>
-        <div class="grid grid-cols-4 gap-3">
-            <div v-for="product in productsList">
-              <ContentProductCard :product="product" cardtype='list'> </ContentProductCard>
-            </div>
-          </div>
+      <div class='absolute w-full left-0 top-full bg-white p-2 z-50' v-if='isSearch'>
+        <div v-for="product in productsList">
+          <ContentProductCard :product="product" cardtype='inline'> </ContentProductCard>
+        </div>
+        <button @click.prevent='gotoSearch'  class="
+                text-white
+                bg-green
+                w-full
+                hover:bg-blue-800
+                focus:ring-4
+                focus:outline-none
+                font-medium
+                px-5 py-4
+                text-md
+                text-center
+                cursor-pointer
+              ">Показать больше</button>
+
       </div>
     </div>
   </div>
@@ -27,11 +39,14 @@ const router = useRouter()
 const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
 
-let productsList: IProducts[] | undefined = reactive([])
+interface IProductsArray extends Array<IProducts>{}
+
+let productsList: IProductsArray | undefined = reactive([])
 
 /* let timeout: ReturnType<typeof setTimeout> | null = null
  */
-const livesearch = async () => {
+const livesearch = _.debounce(async () => {
+  console.log(productsList)
  if (query.value.length > 2) {
     productsList = []
     const {
@@ -39,15 +54,22 @@ const livesearch = async () => {
       pending,
       refresh,
       error,
-    } = await useFetch<ICategory>(
-      () =>
-      `/api/search/?page=1&take=3&skip=0&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&search=${keywordQuery.value}`
+    } = await useFetch<ICategory>('/api/search/', {
+        query: {
+          page: 1,
+          take:3,
+          skip:0,
+          sort_field: sort_field.value,
+          sort_direction: sort_direction.value,
+          search: keywordQuery.value,
+          filters: JSON.stringify({ quantity: {gt: 0} })
+        },
+        pick: ['products'],
+      }
     )
     productsList = products.value?.products
  }
-}
-
-
+}, 400)
 
 const querySet = (property: string): Array<Object> => {
   const arrQuery = queryString.value.map((item) => {
@@ -60,6 +82,9 @@ const querySet = (property: string): Array<Object> => {
   return arrQuery
 }
 
+const isSearch = computed(() => {
+  return productsList?.length
+})
 
 const queryString = computed<string[]>(() => {
   return query.value.split(" ").map(item => " " + item)
