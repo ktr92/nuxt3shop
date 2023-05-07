@@ -20,7 +20,6 @@
 <script setup lang="ts">
 import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline"
 import _ from "lodash"
-import { _AsyncData } from "nuxt/dist/app/composables/asyncData"
 
 const query = ref("")
 const router = useRouter()
@@ -39,7 +38,7 @@ const livesearch = async () => {
       const { products } = await livesearch_v2()
       productsList = products
   } catch (error) {
-    
+    console.log(error)
   }
     
  }
@@ -52,7 +51,7 @@ const livesearch_v2 = (): Promise<ICategory> => {
         () =>
         `/api/search/?page=1&take=3&skip=0&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&search=${keywordQuery.value}`
       )
-      resolve(response)
+      resolve(response.value as ICategory)
     } catch (error) {
       reject(error)
     }
