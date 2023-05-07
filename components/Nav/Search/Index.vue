@@ -8,8 +8,9 @@
         <MagnifyingGlassIcon class="w-6 h-6 stroke-slate-500" />
       </div>
       <div class='absolute w-full left-0 top-full bg-white p-2 z-50' v-if='isSearch'>
-        <div v-for="product in productsList">
+        <div v-for="product in productsList" :key='product.product_id'>
           <ContentProductCard :product="product" cardtype='inline'> </ContentProductCard>
+           
         </div>
         <button @click.prevent='gotoSearch'  class="
                 text-white
@@ -35,41 +36,53 @@ import _ from "lodash"
 
 const query = ref("")
 const router = useRouter()
+const productsList = ref<IProducts[]>([])
 
-const sort_field = ref("sort_order")
-const sort_direction = ref("asc")
 
-interface IProductsArray extends Array<IProducts>{}
-
-let productsList: IProductsArray | undefined = reactive([])
-
-/* let timeout: ReturnType<typeof setTimeout> | null = null
- */
-const livesearch = _.debounce(async () => {
-  console.log(productsList)
+const livesearch = async () => {
  if (query.value.length > 2) {
-    productsList = []
-    const {
-      data: products,
-      pending,
-      refresh,
-      error,
-    } = await useFetch<ICategory>('/api/search/', {
-        query: {
-          page: 1,
-          take:3,
-          skip:0,
-          sort_field: sort_field.value,
-          sort_direction: sort_direction.value,
-          search: keywordQuery.value,
-          filters: JSON.stringify({ quantity: {gt: 0} })
-        },
-        pick: ['products'],
-      }
-    )
-    productsList = products.value?.products
+  try {
+      productsList.value = []
+      const { products } = await getResult()
+      productsList.value = products
+  } catch (error) {
+    console.log(error)
+  }
  }
-}, 400)
+}
+const getResult = (): Promise<ICategory> => {
+  return new Promise( async (resolve, reject) => {
+      try {
+        const {data: response} = await useFetch<ICategory>(
+        () =>
+        `/api/livesearch/?search=${keywordQuery.value}`
+      )
+      if (response.value) {
+         resolve(response.value)
+      }
+     
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+
+
+
+const isSearch = computed(() => {
+  return Object.keys(productsList.value).length
+  
+})
+
+const queryString = computed<string[]>(() => {
+  return query.value.split(" ").map(item => " " + item)
+})
+
+const keywordQuery = computed(() => {
+ return JSON.stringify({ ...searchExample.value[0] })
+}) 
+
 
 const querySet = (property: string): Array<Object> => {
   const arrQuery = queryString.value.map((item) => {
@@ -81,19 +94,6 @@ const querySet = (property: string): Array<Object> => {
   })
   return arrQuery
 }
-
-const isSearch = computed(() => {
-  return productsList?.length
-})
-
-const queryString = computed<string[]>(() => {
-  return query.value.split(" ").map(item => " " + item)
-})
-
-const keywordQuery = computed(() => {
- return JSON.stringify({ ...searchExample.value[0] })
-}) 
-
 
 const searchExample = computed(() => {
   return [

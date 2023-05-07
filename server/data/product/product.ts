@@ -270,9 +270,22 @@ export async function getProductsByFilter(
       products_array
     )
   } 
-
-
-
-
   return { products: { ...productTransformer<IProducts>(products) }, products_count, properties, prices }
+}
+
+
+export async function getProductsByLivesearch(keyword: string) {
+ 
+  const productsPager = {
+    take: 3,
+    skip: 0,
+  }
+  const products = await getProductsWithDescriptionById(
+    productsPager,
+    "sort_order",
+    "asc",
+    keyword
+  )
+
+  return { products: { ...productTransformer<IProducts>(products) } }
 }

@@ -5,11 +5,7 @@ export default defineEventHandler(async (event) => {
 
   const products  =
     await getProductsByLivesearch(
-      Number(query.take),
-      String(query.sort_field),
-      String(query.sort_direction),
-      query.filters as string,
-      query.search as string
+      String(query.search)
     )
 
   return products
