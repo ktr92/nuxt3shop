@@ -223,24 +223,6 @@ async function getProductsWithDescriptionById(
   return products
 }
 
-/* const getParamsByCategory = async (filters: string, categoryId: number) => {
-    const products_array = await getProductsIdByCategory(categoryId)
-    const prices = await getPricesById(products_array, filters)
-    const properties = await getManufacturersById(products_array, filters)
-    return {
-      products_array, prices, properties
-    }
-}
-
-const getParams = async (filters: string, keyword: string) => {
-    const products_array = await getProductsIdByFilter(filters, keyword)
-    const prices = await getPricesById(products_array)
-    const properties = await getManufacturersById(products_array)
-    return {
-      products_array, prices, properties
-    }
- 
-} */
 
 export async function getProductsByFilter(
   params: IProductAPI

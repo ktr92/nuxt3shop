@@ -56,26 +56,6 @@ const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
 const filters = ref("{}")
 
-/* const {
-  data: category,
-  pending,
-  refresh,
-  error,
-} = await useFetch<ICategory>(
-  () =>
-    `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}`
-) */
-
-/* const [
-  { data: category, pending: pendingCategory, error: errorCategory },
-  { data: products, pending: pendingProducts, error: errorProducts },
-] = await Promise.all([
-  useFetch<ICategory>(() => `/api/category/${route.params.id}`),
-  useFetch<IProductList>(
-    () =>
-      `/api/search/?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}&categoryid=${category.value.category_id}`
-  ),
-]) */
 const {
   data: category,
   pending: pendingCategory,
