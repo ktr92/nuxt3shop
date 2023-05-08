@@ -2,6 +2,11 @@ import type { Config } from "tailwindcss"
 export default <Partial<Config>>{
   viewer: false,
   darkMode: "class",
+  safelist: [
+    {
+      pattern: /columns-(1|2|3|4|5|6|7|8|9)/,
+    },
+  ],
   theme: {
     container: {
       center: true,
