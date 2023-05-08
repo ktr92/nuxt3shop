@@ -1,31 +1,43 @@
 <template>
   <div>
-    <div class="header__button  relative">
+    <div class="header__button relative">
       <div class="searchinput">
-        <UIInput v-model="query" @onEnter="gotoSearch" @input='livesearch'></UIInput>
+        <UIInput
+          v-model="query"
+          @onEnter="gotoSearch"
+          @input="livesearch"
+        ></UIInput>
       </div>
       <div class="absolute right-2 top-2 cursor-pointer" @click="gotoSearch">
         <MagnifyingGlassIcon class="w-6 h-6 stroke-slate-500" />
       </div>
-      <div class='absolute w-full left-0 top-full bg-white p-2 z-50' v-if='isSearch'>
-        <div v-for="product in productsList" :key='product.product_id'>
-          <ContentProductCard :product="product" cardtype='inline'> </ContentProductCard>
-           
+      <div
+        class="absolute w-full left-0 top-full bg-white p-2 z-50"
+        v-if="isSearch"
+        v-click-outside="onClickOutside"
+      >
+        <div v-for="product in productsList" :key="product.product_id">
+          <ContentProductCard :product="product" cardtype="inline">
+          </ContentProductCard>
         </div>
-        <button @click.prevent='gotoSearch'  class="
-                text-white
-                bg-green
-                w-full
-                hover:bg-blue-800
-                focus:ring-4
-                focus:outline-none
-                font-medium
-                px-5 py-4
-                text-md
-                text-center
-                cursor-pointer
-              ">Показать больше</button>
-
+        <button
+          @click.prevent="gotoSearch"
+          class="
+            text-white
+            bg-green
+            w-full
+            hover:bg-blue-800
+            focus:ring-4
+            focus:outline-none
+            font-medium
+            px-5
+            py-4
+            text-md text-center
+            cursor-pointer
+          "
+        >
+          Показать больше
+        </button>
       </div>
     </div>
   </div>
@@ -37,52 +49,37 @@ import _ from "lodash"
 const query = ref("")
 const router = useRouter()
 const productsList = ref<IProducts[]>([])
+const { getProductsLive } = useProducts()
+const isShown = ref(true)
 
-
-const livesearch = async () => {
- if (query.value.length > 2) {
-  try {
+const livesearch = _.debounce(async () => {
+  if (query.value.length > 2) {
+    try {
+      isShown.value = true
       productsList.value = []
-      const { products } = await getResult()
+      const { products } = await getProductsLive({
+        search: keywordQuery.value,
+      })
       productsList.value = products
-  } catch (error) {
-    console.log(error)
-  }
- }
-}
-const getResult = (): Promise<ICategory> => {
-  return new Promise( async (resolve, reject) => {
-      try {
-        const {data: response} = await useFetch<ICategory>(
-        () =>
-        `/api/livesearch/?search=${keywordQuery.value}`
-      )
-      if (response.value) {
-         resolve(response.value)
-      }
-     
     } catch (error) {
-      reject(error)
+      console.log(error)
     }
-  })
+  }
+}, 500)
+const onClickOutside = () => {
+  isShown.value = false
 }
-
-
-
-
 const isSearch = computed(() => {
-  return Object.keys(productsList.value).length
-  
+  return Object.keys(productsList.value).length && isShown.value
 })
 
 const queryString = computed<string[]>(() => {
-  return query.value.split(" ").map(item => " " + item)
+  return query.value.split(" ").map((item) => " " + item)
 })
 
 const keywordQuery = computed(() => {
- return JSON.stringify({ ...searchExample.value[0] })
-}) 
-
+  return JSON.stringify({ ...searchExample.value[0] })
+})
 
 const querySet = (property: string): Array<Object> => {
   const arrQuery = queryString.value.map((item) => {

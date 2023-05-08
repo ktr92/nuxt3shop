@@ -9,13 +9,4 @@ export default defineEventHandler(async (event) => {
     )
 
   return products
-
-  return sendError(
-    event,
-    createError({
-      statusCode: 404,
-      statusMessage: "Page not found",
-      fatal: true,
-    })
-  )
 })

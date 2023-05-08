@@ -223,6 +223,25 @@ async function getProductsWithDescriptionById(
   return products
 }
 
+const getParamsByCategory = async (filters: string, categoryId: number) => {
+    const products_array = await getProductsIdByCategory(categoryId)
+    const prices = await getPricesById(products_array, filters)
+    const properties = await getManufacturersById(products_array, filters)
+    return {
+      products_array, prices, properties
+    }
+}
+
+const getParams = async (filters: string, keyword: string) => {
+    const products_array = await getProductsIdByFilter(filters, keyword)
+    const prices = await getPricesById(products_array)
+    const properties = await getManufacturersById(products_array)
+    return {
+      products_array, prices, properties
+    }
+ 
+}
+
 export async function getProductsByFilter(
   takes: number,
   sort_field: string,
@@ -236,21 +255,8 @@ export async function getProductsByFilter(
     skip: 0,
   }
 
-  let products_array = null
-  let prices = null
-  let properties = null
+  const { products_array, prices, properties } = categoryId ? await getParamsByCategory(filters, categoryId) : await getParams(filters, keyword ? keyword: '')
 
-  if (categoryId) {
-    products_array = await getProductsIdByCategory(categoryId)
-    prices = await getPricesById(products_array, filters)
-    properties = await getManufacturersById(products_array, filters)
-
-  } else {
-   
-    products_array = await getProductsIdByFilter(filters, keyword)
-    prices = await getPricesById(products_array)
-    properties = await getManufacturersById(products_array)
-  }
   const products_count = await getProductsCountById(filters, products_array)
   
   let products = null

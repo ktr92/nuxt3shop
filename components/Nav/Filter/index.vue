@@ -53,7 +53,12 @@
 import _ from "lodash"
 import { XMarkIcon } from "@heroicons/vue/24/outline"
 
-import { PropType } from "nuxt/dist/app/compat/capi"
+const props = defineProps({
+  category: {
+    type: Object as PropType<ICategory>,
+    required: true,
+  },
+})
 
 const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
@@ -63,12 +68,7 @@ const filterSet = ref([] as Array<any>)
 const priceMin = ref(0)
 const priceMax = ref(0)
 
-const props = defineProps({
-  category: {
-    type: Object as PropType<ICategory>,
-    required: true,
-  },
-})
+const emits = defineEmits(["sortEmit", "filterEmit"])
 
 const sort_active = computed(() => {
   return sort_field.value + sort_direction.value
@@ -84,19 +84,15 @@ const priceClearable = computed(() => {
 onMounted(() => {
   priceMin.value = Number(prices.value[0])
   priceMax.value = Number(prices.value[1])
-  addFilter(filterSet.value, searchExample.items[0])
-  const rule = JSON.stringify({ ...filterSetObj.value })
-  filters.value = rule
 })
 
 const sort = (item: ISelect) => {
-  sort_field.value = item.param
-  sort_direction.value = item.prop as string
   sort_title.value = item.title
+  emits("sortEmit", item)
 }
 
 const prices = computed(() => {
-  return [props.category?.prices._min.price, props.category?.prices._max.price]
+  return [props.category.prices._min.price, props.category.prices._max.price]
 })
 
 const filterSetObj = computed(() => {
@@ -118,6 +114,12 @@ const addFilter = (array: Array<ISelect>, filter?: ISelect) => {
   })
 }
 
+const changeFilters = () => {
+  const rule = JSON.stringify({ ...filterSetObj.value })
+  filters.value = rule
+  emits("filterEmit", filters.value)
+}
+
 const acceptFilter = (filter: ISelect) => {
   const isExist = filterSet.value.filter((item) => item.code === filter.code)
   if (isExist.length === 0) {
@@ -131,8 +133,7 @@ const acceptFilter = (filter: ISelect) => {
     }
   }
 
-  const rule = JSON.stringify({ ...filterSetObj.value })
-  filters.value = rule
+  changeFilters()
 }
 
 const changePrice = (pricesParam: Array<number>) => {
@@ -148,9 +149,7 @@ const changePrice = (pricesParam: Array<number>) => {
     },
     param: "_max",
   })
-
-  const rule = JSON.stringify({ ...filterSetObj.value })
-  filters.value = rule
+  changeFilters()
 }
 
 const clearPriceFilter = () => {
@@ -162,8 +161,8 @@ const clearFilter = (filterprop: ISelect) => {
     (item: ISelect) => item.param !== filterprop.param
   )
   filterSet.value = cleaned
-  const rule = JSON.stringify({ ...filterSetObj.value })
-  filters.value = rule
+
+  changeFilters()
 }
 
 const where = computed(() => [
@@ -197,7 +196,7 @@ const where = computed(() => [
   {
     code: "manufacturer_id",
     title: "Производитель",
-    items: props.category?.properties.manufacturer,
+    items: props.category.properties.manufacturer,
   },
 ])
 
@@ -252,26 +251,6 @@ const sorting: Array<ISelect> = [
     prop: "desc",
   },
 ]
-
-const searchExample = {
-  code: "model",
-  title: "ss",
-  items: [
-    {
-      title: "model",
-      param: "model",
-      prop: "model",
-      code: "model",
-      rule: {
-        oc_product_description: {
-          name: {
-            contains: "Iron",
-          },
-        },
-      },
-    },
-  ],
-}
 </script>
 
 <style></style>
