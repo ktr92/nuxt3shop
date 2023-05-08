@@ -50,13 +50,12 @@ const query = ref("")
 const router = useRouter()
 const productsList = ref<IProducts[]>([])
 const { getProductsLive } = useProducts()
-const isShown = ref(true)
 
 const livesearch = _.debounce(async () => {
   if (query.value.length > 2) {
     try {
-      isShown.value = true
       productsList.value = []
+      pageConfig.showLive()
       const { products } = await getProductsLive({
         search: keywordQuery.value,
       })
@@ -66,11 +65,17 @@ const livesearch = _.debounce(async () => {
     }
   }
 }, 500)
+
+const pageConfig = useMain()
+
 const onClickOutside = () => {
-  isShown.value = false
+  pageConfig.hideLive()
 }
 const isSearch = computed(() => {
   return Object.keys(productsList.value).length && isShown.value
+})
+const isShown = computed(() => {
+  return pageConfig.getLive
 })
 
 const queryString = computed<string[]>(() => {
@@ -123,6 +128,7 @@ const searchExample = computed(() => {
 
 const gotoSearch = () => {
   const keyword = keywordQuery.value
-  router.push({ path: "search", query: { keyword } })
+  pageConfig.hideLive()
+  router.push({ path: "/search", query: { keyword } })
 }
 </script>

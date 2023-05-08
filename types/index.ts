@@ -54,10 +54,22 @@ declare global {
     description: string
     meta_title: string
     meta_description: string
+  }
+
+  interface IProductList {
     products: Array<IProducts>
     products_count: ICount
     properties: IProperties
     prices: any
+  }
+
+  interface IProductAPI {
+    takes: number
+    sort_field: string
+    sort_direction: string
+    filters: string
+    categoryId?: number | undefined
+    keyword?: string | undefined
   }
 
   interface IProducts extends IProductId {

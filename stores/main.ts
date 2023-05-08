@@ -4,16 +4,24 @@ export const useMain = defineStore("main", {
       title: "",
       link: "#",
     },
+    isLive: false,
   }),
 
   getters: {
     getPageInfo: (state) => state.pageInfo,
+    getLive: (state) => state.isLive,
   },
 
   actions: {
     setPageInfo(title: string, link: string) {
       this.pageInfo.title = title || ""
       this.pageInfo.link = link || "#"
+    },
+    hideLive() {
+      this.isLive = false
+    },
+    showLive() {
+      this.isLive = true
     },
   },
 })

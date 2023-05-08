@@ -16,17 +16,18 @@ export default defineEventHandler(async (event) => {
     // get item from DB through the path
     const category = await getCategoryInfo(cat_id)
 
-    const { products, products_count, properties, prices } =
-      await getProductsByFilter(
-        Number(query.take),
-        String(query.sort_field),
-        String(query.sort_direction),
-        query.filters as string,
-        cat_id
-      )
+    /*  const {
+     productsproducts_count, properties, prices 
+    } = await getProductsByFilter(
+      Number(query.take),
+      String(query.sort_field),
+      String(query.sort_direction),
+      query.filters as string,
+      cat_id
+    )*/
 
     if ((category as any).categoryinfo.status) {
-      return { ...category, products, products_count, properties, prices }
+      return { ...category /* products, products_count, properties, prices*/ }
     }
   }
 

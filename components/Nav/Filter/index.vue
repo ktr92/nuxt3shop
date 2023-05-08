@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="flex py-4">
     <div class="flex items-center ml-4">
       <div v-for="filter in where" class="mr-4">
         <NavFilterItem
@@ -54,9 +54,13 @@ import _ from "lodash"
 import { XMarkIcon } from "@heroicons/vue/24/outline"
 
 const props = defineProps({
-  category: {
-    type: Object as PropType<ICategory>,
+  products: {
+    type: Object as PropType<IProductList>,
     required: true,
+  },
+  category_id: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -92,7 +96,7 @@ const sort = (item: ISelect) => {
 }
 
 const prices = computed(() => {
-  return [props.category.prices._min.price, props.category.prices._max.price]
+  return [props.products.prices._min.price, props.products.prices._max.price]
 })
 
 const filterSetObj = computed(() => {
@@ -117,6 +121,7 @@ const addFilter = (array: Array<ISelect>, filter?: ISelect) => {
 const changeFilters = () => {
   const rule = JSON.stringify({ ...filterSetObj.value })
   filters.value = rule
+  console.log(filters.value)
   emits("filterEmit", filters.value)
 }
 
@@ -196,7 +201,7 @@ const where = computed(() => [
   {
     code: "manufacturer_id",
     title: "Производитель",
-    items: props.category.properties.manufacturer,
+    items: props.products.properties.manufacturer,
   },
 ])
 

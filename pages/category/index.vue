@@ -1,14 +1,11 @@
 <template>
   <div>
     <div class="container">
-      <p></p> 
+      <p></p>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-
-
-</script>
+<script setup lang="ts"></script>
 
 <style></style>

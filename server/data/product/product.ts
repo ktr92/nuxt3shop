@@ -223,7 +223,7 @@ async function getProductsWithDescriptionById(
   return products
 }
 
-const getParamsByCategory = async (filters: string, categoryId: number) => {
+/* const getParamsByCategory = async (filters: string, categoryId: number) => {
     const products_array = await getProductsIdByCategory(categoryId)
     const prices = await getPricesById(products_array, filters)
     const properties = await getManufacturersById(products_array, filters)
@@ -240,39 +240,44 @@ const getParams = async (filters: string, keyword: string) => {
       products_array, prices, properties
     }
  
-}
+} */
 
 export async function getProductsByFilter(
-  takes: number,
-  sort_field: string,
-  sort_direction: string,
-  filters: string,
-  categoryId?: number | undefined,
-  keyword?: string
+  params: IProductAPI
 ) {
   const productsPager = {
-    take: takes,
+    take: params.takes,
     skip: 0,
   }
 
-  const { products_array, prices, properties } = categoryId ? await getParamsByCategory(filters, categoryId) : await getParams(filters, keyword ? keyword: '')
+  let products_array: number[] = []
+  if ( params.categoryId !== undefined ) {
+     products_array = await getProductsIdByCategory(params.categoryId)
+  } else {
+    if (params.keyword !== undefined ) {
+       products_array = await getProductsIdByFilter(params.filters, params.keyword)
+    }
+  }
 
-  const products_count = await getProductsCountById(filters, products_array)
+  const prices = await getPricesById(products_array, params.filters)
+  const properties = await getManufacturersById(products_array, params.filters)
+
+  const products_count = await getProductsCountById( params.filters, products_array)
   
   let products = null
 
-  if (sort_field === "name") {
+  if ( params.sort_field === "name") {
     products = await getProductsDescriptionById(
       productsPager,
-      filters,
+      params.filters,
       products_array
     )
   } else {
     products = await getProductsWithDescriptionById(
       productsPager,
-      sort_field,
-      sort_direction,
-      filters,
+      params.sort_field,
+      params.sort_direction,
+      params.filters,
       products_array
     )
   } 

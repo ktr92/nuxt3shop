@@ -1,29 +1,34 @@
 <template>
   <div>
     <div class="container relative">
-      <template v-if="category">
+      <div v-if="pendingCategory || !category">
+        <UILoading />
+      </div>
+      <template v-else>
         <div class="flex items-center justify-between">
           <h1 class="my-8">{{ category.name }}</h1>
           <NavFilter
-            :category="category"
+            v-if="productslist"
+            :products="productslist"
+            :category_id="true"
             @sortEmit="onSortEmit"
             @filterEmit="onFilterEmit"
           />
         </div>
 
-        <div v-if="category.products">
+        <div v-if="productslist?.products">
           <div class="grid grid-cols-4 gap-3">
-            <div v-for="product in category.products">
+            <div v-for="product in productslist.products">
               <ContentProductCard :product="product"> </ContentProductCard>
             </div>
           </div>
         </div>
-        <div v-if="pending">
+        <div v-if="pendingProducts || !productslist?.products">
           <UILoading />
         </div>
         <template v-else>
           <NavShowmore
-            :count="category.products_count._count.product_id"
+            :count="productslist.products_count._count.product_id"
             :more="more"
             @showMore="showMore"
             @showAll="showAll"
@@ -51,7 +56,7 @@ const sort_field = ref("sort_order")
 const sort_direction = ref("asc")
 const filters = ref("{}")
 
-const {
+/* const {
   data: category,
   pending,
   refresh,
@@ -59,7 +64,49 @@ const {
 } = await useFetch<ICategory>(
   () =>
     `/api/category/${route.params.id}?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}`
+) */
+
+/* const [
+  { data: category, pending: pendingCategory, error: errorCategory },
+  { data: products, pending: pendingProducts, error: errorProducts },
+] = await Promise.all([
+  useFetch<ICategory>(() => `/api/category/${route.params.id}`),
+  useFetch<IProductList>(
+    () =>
+      `/api/search/?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}&categoryid=${category.value.category_id}`
+  ),
+]) */
+const {
+  data: category,
+  pending: pendingCategory,
+  error: errorCategory,
+} = await useFetch<ICategory>(() => `/api/category/${route.params.id}`)
+
+const {
+  data: productslist,
+  pending: pendingProducts,
+  error: errorProducts,
+} = await useFetch<IProductList>(
+  () =>
+    `/api/search/?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}&categoryid=${category.value?.category_id}`
 )
+
+if (errorCategory.value) {
+  throw createError({
+    statusCode: errorCategory.value.data.statusCode,
+    statusMessage: errorCategory.value.data.statusMessage,
+    message: "Такой страницы нет",
+    fatal: false,
+  })
+}
+if (errorProducts.value) {
+  throw createError({
+    statusCode: errorProducts.value.data.statusCode,
+    statusMessage: errorProducts.value.data.statusMessage,
+    message: "Ошибка при загрузке каталога",
+    fatal: false,
+  })
+}
 
 useServerSeoMeta({
   title: category.value ? category.value.meta_title : "",
@@ -87,26 +134,19 @@ const onFilterEmit = (filter: string) => {
 const pageConfig = useMain()
 pageConfig.setPageInfo(category.value ? category.value.name : "", "#")
 
-if (error.value) {
-  throw createError({
-    statusCode: error.value.data.statusCode,
-    statusMessage: error.value.data.statusMessage,
-    message: "Такой страницы нет",
-    fatal: false,
-  })
-}
-
 const description = computed(() => {
   return category.value ? decodeHtmlCharCodes(category.value.description) : ""
 })
 
 const totalCount = computed(() => {
-  return category.value ? category.value.products_count._count.product_id : 0
+  return productslist.value
+    ? productslist.value.products_count._count.product_id
+    : 0
 })
 
 const more = computed(() => {
-  return category.value
-    ? totalCount.value - Object.keys(category.value.products).length
+  return productslist.value
+    ? totalCount.value - Object.keys(productslist.value.products).length
     : 0
 })
 

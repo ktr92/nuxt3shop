@@ -1,8 +1,8 @@
 export default () => {
-  const getProductsLive = (options: Object): Promise<ICategory> => {
+  const getProductsLive = (options: Object): Promise<IProductList> => {
     return new Promise(async (resolve, reject) => {
       try {
-        const { data: response } = await useFetch<ICategory>(
+        const { data: response } = await useFetch<IProductList>(
           `/api/livesearch/`,
           {
             params: { ...options },
