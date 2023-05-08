@@ -20,25 +20,9 @@
           <ContentProductCard :product="product" cardtype="inline">
           </ContentProductCard>
         </div>
-        <UIButtton
-          @onClick="gotoSearch"
-          size="lg"
-          class="
-            text-white
-            bg-green
-            w-full
-            hover:bg-blue-800
-            focus:ring-4
-            focus:outline-none
-            font-medium
-            px-5
-            py-4
-            text-md text-center
-            cursor-pointer
-          "
-        >
+        <UIButton @onclick="gotoSearch" size="lg" :liquid="true">
           Показать больше
-        </UIButtton>
+        </UIButton>
       </div>
     </div>
   </div>
