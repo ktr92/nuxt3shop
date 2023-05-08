@@ -1,6 +1,7 @@
 body {
   overflow-y: scroll;
 }
+/* there are styles for site content from database */
 
 * {
   @apply outline-none;
@@ -37,7 +38,7 @@ img {
   max-width: 100%;
   max-height: 100%;
 }
-
+/* We need declare Tailwind classes that might be generated dynamically. Otherwise Tailwind wont generate them. */
 .columns-1 {
   columns: 1;
 }

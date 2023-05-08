@@ -20,8 +20,9 @@
           <ContentProductCard :product="product" cardtype="inline">
           </ContentProductCard>
         </div>
-        <button
-          @click.prevent="gotoSearch"
+        <UIButtton
+          @onClick="gotoSearch"
+          size="lg"
           class="
             text-white
             bg-green
@@ -37,7 +38,7 @@
           "
         >
           Показать больше
-        </button>
+        </UIButtton>
       </div>
     </div>
   </div>
