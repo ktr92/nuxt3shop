@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container relative">
-      <div v-if="pendingCategory || !category">
+      <div v-if="!category">
         <UILoading />
       </div>
       <template v-else>
@@ -23,7 +23,7 @@
             </div>
           </div>
         </div>
-        <div v-if="pendingProducts || !productslist?.products">
+        <div v-if="!productslist?.products || loading">
           <UILoading />
         </div>
         <template v-else>
@@ -43,18 +43,24 @@
 <script setup lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
 import _ from "lodash"
-
+import { hash } from 'ohash'
 const TAKE_NUMBER = 8
 
 const route = useRoute()
 
-const page = ref(1)
-const take = ref(TAKE_NUMBER)
-const takegrow = ref(TAKE_NUMBER)
-const skip = ref(page.value === 1 ? 0 : (page.value - 1) * take.value)
-const sort_field = ref("sort_order")
-const sort_direction = ref("asc")
-const filters = ref("{}")
+let page = 1
+let take = TAKE_NUMBER
+let takegrow = TAKE_NUMBER
+let skip = page === 1 ? 0 : (page - 1) * take
+let sort_field = "sort_order"
+let sort_direction = "asc"
+let filters = "{}"
+
+const loading = ref(false)
+
+const productslist = ref<IProductList>()
+
+const { getProductsList } = useProducts()
 
 const {
   data: category,
@@ -62,14 +68,39 @@ const {
   error: errorCategory,
 } = await useFetch<ICategory>(() => `/api/category/${route.params.id}`)
 
-const {
+/* const {
   data: productslist,
   pending: pendingProducts,
   error: errorProducts,
 } = await useFetch<IProductList>(
   () =>
     `/api/search/?page=${page.value}&take=${take.value}&skip=${skip.value}&sort_field=${sort_field.value}&sort_direction=${sort_direction.value}&filters=${filters.value}&categoryid=${category.value?.category_id}`
-)
+) */
+
+const getList = async () => {
+  try {
+    loading.value = true
+    const params = {
+      page: page,
+      take: take,
+      skip: skip, 
+      sort_field: sort_field,
+      sort_direction: sort_direction,
+      filters: filters,
+      categoryid: category.value?.category_id
+    }
+    const list = await getProductsList(params)
+    if (list) {
+      productslist.value = list
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const data = await getList()
 
 if (errorCategory.value) {
   throw createError({
@@ -79,14 +110,14 @@ if (errorCategory.value) {
     fatal: false,
   })
 }
-if (errorProducts.value) {
+/* if (errorProducts.value) {
   throw createError({
     statusCode: errorProducts.value.data.statusCode,
     statusMessage: errorProducts.value.data.statusMessage,
     message: "Ошибка при загрузке каталога",
     fatal: false,
   })
-}
+} */
 
 useServerSeoMeta({
   title: category.value ? category.value.meta_title : "",
@@ -102,13 +133,21 @@ useSeoMeta({
     `description: ${category.value ? category.value.meta_description : ""}`,
 })
 
-const onSortEmit = (item: ISelect) => {
-  sort_field.value = item.param
-  sort_direction.value = item.prop as string
+/* watch(
+  () => filters,
+  () => getList()
+)
+ */
+const onSortEmit = async (item: ISelect) => {
+  sort_field = item.param
+  sort_direction = item.prop as string
+  await getList()
 }
 
-const onFilterEmit = (filter: string) => {
-  filters.value = filter
+const onFilterEmit = async (filter: string) => {
+  filters = filter
+
+  await getList()
 }
 
 const pageConfig = useMain()
@@ -130,14 +169,16 @@ const more = computed(() => {
     : 0
 })
 
-const showMore = () => {
-  page.value = page.value + 1
-  take.value = take.value + takegrow.value
-  skip.value = 0
+const showMore = async () => {
+  page = page + 1
+  take = take + takegrow
+  skip = 0
+  await getList()
 }
-const showAll = () => {
-  take.value = totalCount.value
-  skip.value = 0
+const showAll = async () => {
+  take = totalCount.value
+  skip = 0
+  await getList()
 }
 </script>
 

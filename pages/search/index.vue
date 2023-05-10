@@ -66,14 +66,6 @@ if (errorProducts.value) {
   })
 }
 
-useServerSeoMeta({
-  title: productslist.value ? productslist.value.meta_title : "",
-  ogTitle: productslist.value ? productslist.value.meta_title : "",
-  description: productslist.value ? productslist.value.meta_description : "",
-  ogDescription: productslist.value ? productslist.value.meta_description : "",
-  ogImage: productslist.value ? productslist.value.image : "",
-})
-
 const onSortEmit = (item: ISelect) => {
   sort_field.value = item.param
   sort_direction.value = item.prop as string
@@ -82,9 +74,6 @@ const onSortEmit = (item: ISelect) => {
 const onFilterEmit = (filter: string) => {
   filters.value = filter
 }
-
-const pageConfig = useMain()
-pageConfig.setPageInfo(productslist.value ? productslist.value.name : "", "#")
 
 const totalCount = computed(() => {
   return productslist.value
