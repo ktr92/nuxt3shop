@@ -5,35 +5,11 @@
         <UILoading />
       </div>
       <template v-else>
-        <div class="flex items-center justify-between">
-          <h1 class="my-8">{{ category.name }}</h1>
-          <NavFilter
-            v-if="productslist"
-            :products="productslist"
-            :category_id="true"
-            @sortEmit="onSortEmit"
-            @filterEmit="onFilterEmit"
-          />
-        </div>
-
-        <div v-if="productslist?.products">
-          <div class="grid grid-cols-4 gap-3">
-            <div v-for="product in productslist.products">
-              <ContentProductCard :product="product"> </ContentProductCard>
-            </div>
-          </div>
-        </div>
-        <div v-if="!productslist?.products || loading">
-          <UILoading />
-        </div>
-        <template v-else>
-          <NavShowmore
-            :count="productslist.products_count._count.product_id"
-            :more="more"
-            @showMore="showMore"
-            @showAll="showAll"
-          ></NavShowmore>
-        </template>
+        <ContentProductList :productslist="productslist" @onupdate="getList">
+          <template v-slot:title>
+            <h1 class="my-8">{{ category.name }}</h1>
+          </template>
+        </ContentProductList>
         <div class="content description my-8" v-html="description"></div>
       </template>
     </div>
@@ -67,19 +43,14 @@ const {
   error: errorCategory,
 } = await useFetch<ICategory>(() => `/api/category/${route.params.id}`)
 
-const getList = async () => {
+const getList = async (params: any) => {
   try {
     loading.value = true
-    const params = {
-      page: page,
-      take: take,
-      skip: skip, 
-      sort_field: sort_field,
-      sort_direction: sort_direction,
-      filters: filters,
-      categoryid: category.value?.category_id
-    }
-    const list = await getProductsList(params)
+
+    const list = await getProductsList({
+      categoryid: category.value?.category_id,
+      ...params,
+    })
     if (list) {
       productslist.value = list
     }
@@ -90,7 +61,14 @@ const getList = async () => {
   }
 }
 
-const data = await getList()
+const data = await getList({
+  page: page,
+  take: take,
+  skip: skip,
+  sort_field: sort_field,
+  sort_direction: sort_direction,
+  filters: filters,
+})
 
 if (errorCategory.value) {
   throw createError({
@@ -120,17 +98,6 @@ useSeoMeta({
   () => getList()
 )
  */
-const onSortEmit = async (item: ISelect) => {
-  sort_field = item.param
-  sort_direction = item.prop as string
-  await getList()
-}
-
-const onFilterEmit = async (filter: string) => {
-  filters = filter
-
-  await getList()
-}
 
 const pageConfig = useMain()
 pageConfig.setPageInfo(category.value ? category.value.name : "", "#")
@@ -138,30 +105,6 @@ pageConfig.setPageInfo(category.value ? category.value.name : "", "#")
 const description = computed(() => {
   return category.value ? decodeHtmlCharCodes(category.value.description) : ""
 })
-
-const totalCount = computed(() => {
-  return productslist.value
-    ? productslist.value.products_count._count.product_id
-    : 0
-})
-
-const more = computed(() => {
-  return productslist.value
-    ? totalCount.value - Object.keys(productslist.value.products).length
-    : 0
-})
-
-const showMore = async () => {
-  page = page + 1
-  take = take + takegrow
-  skip = 0
-  await getList()
-}
-const showAll = async () => {
-  take = totalCount.value
-  skip = 0
-  await getList()
-}
 </script>
 
 <style></style>

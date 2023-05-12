@@ -36,6 +36,6 @@ export default () => {
 
   return {
     getProductsLive,
-    getProductsList
+    getProductsList,
   }
 }
