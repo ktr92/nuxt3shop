@@ -1,42 +1,34 @@
 <template>
   <div>
-    <div class="container relative">
-      <div v-if="!category">
-        <UILoading />
-      </div>
-      <template v-else>
-        <div class="flex items-center justify-between">
-          <h1 class="my-8">{{ category.name }}</h1>
-          <NavFilter
-            v-if="productslist"
-            :products="productslist"
-            :category_id="true"
-            @sortEmit="onSortEmit"
-            @filterEmit="onFilterEmit"
-          />
-        </div>
-
-        <div v-if="productslist?.products">
-          <div class="grid grid-cols-4 gap-3">
-            <div v-for="product in productslist.products">
-              <ContentProductCard :product="product"> </ContentProductCard>
-            </div>
-          </div>
-        </div>
-        <div v-if="!productslist?.products || loading">
-          <UILoading />
-        </div>
-        <template v-else>
-          <NavShowmore
-            :count="productslist.products_count._count.product_id"
-            :more="more"
-            @showMore="showMore"
-            @showAll="showAll"
-          ></NavShowmore>
-        </template>
-        <div class="content description my-8" v-html="description"></div>
-      </template>
+    <div class="flex items-center justify-between">
+      <h1 class="my-8">{{ category.name }}</h1>
+      <NavFilter
+        v-if="productslist"
+        :products="productslist"
+        :category_id="true"
+        @sortEmit="onSortEmit"
+        @filterEmit="onFilterEmit"
+      />
     </div>
+
+    <div v-if="productslist?.products">
+      <div class="grid grid-cols-4 gap-3">
+        <div v-for="product in productslist.products">
+          <ContentProductCard :product="product"> </ContentProductCard>
+        </div>
+      </div>
+    </div>
+    <div v-if="!productslist?.products || loading">
+      <UILoading />
+    </div>
+    <template v-else>
+      <NavShowmore
+        :count="productslist.products_count._count.product_id"
+        :more="more"
+        @showMore="showMore"
+        @showAll="showAll"
+      ></NavShowmore>
+    </template>
   </div>
 </template>
 
@@ -73,11 +65,11 @@ const getList = async () => {
     const params = {
       page: page,
       take: take,
-      skip: skip, 
+      skip: skip,
       sort_field: sort_field,
       sort_direction: sort_direction,
       filters: filters,
-      categoryid: category.value?.category_id
+      categoryid: category.value?.category_id,
     }
     const list = await getProductsList(params)
     if (list) {
