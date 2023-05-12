@@ -34,14 +34,14 @@ import _ from "lodash"
 const query = ref("")
 const router = useRouter()
 const productsList = ref<IProducts[]>([])
-const { getProductsLive } = useProducts()
+const { getProductsList } = useProducts()
 
 const livesearch = _.debounce(async () => {
   if (query.value.length > 2) {
     try {
       productsList.value = []
       pageConfig.showLive()
-      const { products } = await getProductsLive({
+      const { products } = await getProductsList("/api/livesearch/", {
         search: keywordQuery.value,
       })
       productsList.value = products

@@ -48,7 +48,7 @@ export default defineComponent({
       try {
         pageConfig.addLoading()
 
-        const list = await getProductsList({
+        const list = await getProductsList("/api/search/", {
           categoryid: category.value?.category_id,
           ...params,
         })

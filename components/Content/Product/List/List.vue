@@ -58,6 +58,11 @@ const emits = defineEmits(["onupdate"])
   () => emits("onupdate", updatetParams.value)
 ) */
 
+const route = useRoute()
+watch(
+  () => route.fullPath,
+  () => emits("onupdate", updatetParams())
+)
 const updatetParams = () => {
   return {
     page: page,
