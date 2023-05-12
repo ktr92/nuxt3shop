@@ -18,18 +18,26 @@ export default () => {
   }
   const getProductsList = (options: Object): Promise<IProductList> => {
     return new Promise(async (resolve, reject) => {
+      const pageConfig = useMain()
       try {
-        const { data: response } = await useFetch<IProductList>(
+        pageConfig.addLoading()
+        /*  const { data: response } = await useFetch<IProductList>(
           `/api/search/`,
           {
             params: { ...options },
           }
-        )
-        if (response.value) {
-          resolve(response.value)
+        ) */
+        const response = await $fetch(`/api/search/`, {
+          method: "GET",
+          params: { ...options },
+        })
+        if (response) {
+          resolve(response)
         }
       } catch (error) {
         reject(error)
+      } finally {
+        pageConfig.removeLoading()
       }
     })
   }

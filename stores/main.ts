@@ -5,11 +5,13 @@ export const useMain = defineStore("main", {
       link: "#",
     },
     isLive: false,
+    isLoading: false,
   }),
 
   getters: {
     getPageInfo: (state) => state.pageInfo,
     getLive: (state) => state.isLive,
+    getLoading: (state) => state.isLoading,
   },
 
   actions: {
@@ -22,6 +24,12 @@ export const useMain = defineStore("main", {
     },
     showLive() {
       this.isLive = true
+    },
+    addLoading() {
+      this.isLoading = true
+    },
+    removeLoading() {
+      this.isLoading = false
     },
   },
 })

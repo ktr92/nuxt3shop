@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-    <div v-if="!productslist?.products">
+    <div v-if="!productslist?.products || pageConfig.getLoading">
       <UILoading />
     </div>
     <template v-else>
@@ -41,13 +41,15 @@ const props = defineProps({
 })
 
 const TAKE_NUMBER = 8
-let page = ref(1)
-let take = ref(TAKE_NUMBER)
-let takegrow = ref(TAKE_NUMBER)
-let skip = ref(page.value === 1 ? 0 : (page.value - 1) * take.value)
-let sort_field = ref("sort_order")
-let sort_direction = ref("asc")
-let filters = ref("{}")
+let page = 1
+let take = TAKE_NUMBER
+let takegrow = TAKE_NUMBER
+let skip = page === 1 ? 0 : (page - 1) * take
+let sort_field = "sort_order"
+let sort_direction = "asc"
+let filters = "{}"
+
+const pageConfig = useMain()
 
 const emits = defineEmits(["onupdate"])
 
@@ -56,7 +58,7 @@ const emits = defineEmits(["onupdate"])
   () => emits("onupdate", updatetParams.value)
 ) */
 
-const updatetParams = computed(() => {
+const updatetParams = () => {
   return {
     page: page,
     take: take,
@@ -65,17 +67,17 @@ const updatetParams = computed(() => {
     sort_direction: sort_direction,
     filters: filters,
   }
-})
+}
 
 const onSortEmit = async (item: ISelect) => {
-  sort_field.value = item.param
-  sort_direction.value = item.prop as string
-  emits("onupdate", updatetParams.value)
+  sort_field = item.param
+  sort_direction = item.prop as string
+  emits("onupdate", updatetParams())
 }
 
 const onFilterEmit = async (filter: string) => {
-  filters.value = filter
-  emits("onupdate", updatetParams.value)
+  filters = filter
+  emits("onupdate", updatetParams())
 }
 
 const totalCount = computed(() => {
@@ -91,15 +93,15 @@ const more = computed(() => {
 })
 
 const showMore = async () => {
-  page.value = page.value + 1
-  take.value = take.value + takegrow.value
-  skip.value = 0
-  emits("onupdate", updatetParams.value)
+  page = page + 1
+  take = take + takegrow
+  skip = 0
+  emits("onupdate", updatetParams())
 }
 const showAll = async () => {
-  take.value = totalCount.value
-  skip.value = 0
-  emits("onupdate", updatetParams.value)
+  take = totalCount.value
+  skip = 0
+  emits("onupdate", updatetParams())
 }
 </script>
 

@@ -16,94 +16,105 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { decodeHtmlCharCodes } from "@/utils/htmldecode"
 import _ from "lodash"
-const TAKE_NUMBER = 8
 
-const route = useRoute()
+export default defineComponent({
+  async setup() {
+    const TAKE_NUMBER = 8
 
-let page = 1
-let take = TAKE_NUMBER
-let takegrow = TAKE_NUMBER
-let skip = page === 1 ? 0 : (page - 1) * take
-let sort_field = "sort_order"
-let sort_direction = "asc"
-let filters = "{}"
+    const route = useRoute()
 
-const loading = ref(false)
+    let page = 1
+    let take = TAKE_NUMBER
+    let takegrow = TAKE_NUMBER
+    let skip = page === 1 ? 0 : (page - 1) * take
+    let sort_field = "sort_order"
+    let sort_direction = "asc"
+    let filters = "{}"
+    const pageConfig = useMain()
+    const productslist = ref<IProductList>()
 
-const productslist = ref<IProductList>()
+    const { getProductsList } = useProducts()
 
-const { getProductsList } = useProducts()
+    const {
+      data: category,
+      pending: pendingCategory,
+      error: errorCategory,
+    } = await useFetch<ICategory>(() => `/api/category/${route.params.id}`)
 
-const {
-  data: category,
-  pending: pendingCategory,
-  error: errorCategory,
-} = await useFetch<ICategory>(() => `/api/category/${route.params.id}`)
+    const getList = async (params: any) => {
+      try {
+        pageConfig.addLoading()
 
-const getList = async (params: any) => {
-  try {
-    loading.value = true
-
-    const list = await getProductsList({
-      categoryid: category.value?.category_id,
-      ...params,
-    })
-    if (list) {
-      productslist.value = list
+        const list = await getProductsList({
+          categoryid: category.value?.category_id,
+          ...params,
+        })
+        if (list) {
+          productslist.value = list
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        pageConfig.removeLoading()
+      }
     }
-  } catch (error) {
-    console.log(error)
-  } finally {
-    loading.value = false
-  }
-}
 
-const data = await getList({
-  page: page,
-  take: take,
-  skip: skip,
-  sort_field: sort_field,
-  sort_direction: sort_direction,
-  filters: filters,
-})
+    const data = await getList({
+      page: page,
+      take: take,
+      skip: skip,
+      sort_field: sort_field,
+      sort_direction: sort_direction,
+      filters: filters,
+    })
 
-if (errorCategory.value) {
-  throw createError({
-    statusCode: errorCategory.value.data.statusCode,
-    statusMessage: errorCategory.value.data.statusMessage,
-    message: "Такой страницы нет",
-    fatal: false,
-  })
-}
+    if (errorCategory.value) {
+      throw createError({
+        statusCode: errorCategory.value.data.statusCode,
+        statusMessage: errorCategory.value.data.statusMessage,
+        message: "Такой страницы нет",
+        fatal: false,
+      })
+    }
 
-useServerSeoMeta({
-  title: category.value ? category.value.meta_title : "",
-  ogTitle: category.value ? category.value.meta_title : "",
-  description: category.value ? category.value.meta_description : "",
-  ogDescription: category.value ? category.value.meta_description : "",
-  ogImage: category.value ? category.value.image : "",
-})
+    useServerSeoMeta({
+      title: category.value ? category.value.meta_title : "",
+      ogTitle: category.value ? category.value.meta_title : "",
+      description: category.value ? category.value.meta_description : "",
+      ogDescription: category.value ? category.value.meta_description : "",
+      ogImage: category.value ? category.value.image : "",
+    })
 
-useSeoMeta({
-  title: category.value ? category.value.meta_title : "",
-  description: () =>
-    `description: ${category.value ? category.value.meta_description : ""}`,
-})
+    useSeoMeta({
+      title: category.value ? category.value.meta_title : "",
+      description: () =>
+        `description: ${category.value ? category.value.meta_description : ""}`,
+    })
 
-/* watch(
+    /* watch(
   () => filters,
   () => getList()
 )
  */
 
-const pageConfig = useMain()
-pageConfig.setPageInfo(category.value ? category.value.name : "", "#")
+    pageConfig.setPageInfo(category.value ? category.value.name : "", "#")
 
-const description = computed(() => {
-  return category.value ? decodeHtmlCharCodes(category.value.description) : ""
+    const description = computed(() => {
+      return category.value
+        ? decodeHtmlCharCodes(category.value.description)
+        : ""
+    })
+
+    return {
+      description,
+      category,
+      productslist,
+      getList,
+    }
+  },
 })
 </script>
 
