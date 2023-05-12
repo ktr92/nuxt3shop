@@ -26,12 +26,6 @@ export default defineComponent({
 
     const route = useRoute()
 
-    let page = 1
-    let take = TAKE_NUMBER
-    let skip = page === 1 ? 0 : (page - 1) * take
-    let sort_field = "sort_order"
-    let sort_direction = "asc"
-    let filters = "{}"
     const pageConfig = useMain()
     const productslist = ref<IProductList>()
 
@@ -58,12 +52,12 @@ export default defineComponent({
     }
 
     const data = await getList({
-      page: page,
-      take: take,
-      skip: skip,
-      sort_field: sort_field,
-      sort_direction: sort_direction,
-      filters: filters,
+      page: 1,
+      take: TAKE_NUMBER,
+      skip: 1,
+      sort_field: "sort_order",
+      sort_direction: "asc",
+      filters: "{}",
     })
 
     if (errorCategory.value) {
