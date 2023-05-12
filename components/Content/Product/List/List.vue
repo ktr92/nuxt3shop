@@ -63,7 +63,7 @@ watch(
   () => route.fullPath,
   () => emits("onupdate", updatetParams())
 )
-const updatetParams = () => {
+const updatetParams = (): IProductRefreshAPI => {
   return {
     page: page,
     take: take,

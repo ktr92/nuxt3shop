@@ -28,7 +28,6 @@ export default defineComponent({
 
     let page = 1
     let take = TAKE_NUMBER
-    let takegrow = TAKE_NUMBER
     let skip = page === 1 ? 0 : (page - 1) * take
     let sort_field = "sort_order"
     let sort_direction = "asc"
@@ -44,10 +43,8 @@ export default defineComponent({
       error: errorCategory,
     } = await useFetch<ICategory>(() => `/api/category/${route.params.id}`)
 
-    const getList = async (params: any) => {
+    const getList = async (params: IProductRefreshAPI) => {
       try {
-        pageConfig.addLoading()
-
         const list = await getProductsList("/api/search/", {
           categoryid: category.value?.category_id,
           ...params,
@@ -57,8 +54,6 @@ export default defineComponent({
         }
       } catch (error) {
         console.log(error)
-      } finally {
-        pageConfig.removeLoading()
       }
     }
 

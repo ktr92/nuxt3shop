@@ -36,10 +36,8 @@ watch(
   () => getList
 )
  */
-const getList = async (params: any) => {
+const getList = async (params: IProductRefreshAPI) => {
   try {
-    pageConfig.addLoading()
-
     const list = await getProductsList("/api/search/", {
       search: route.query.keyword,
       ...params,
@@ -49,8 +47,6 @@ const getList = async (params: any) => {
     }
   } catch (error) {
     console.log(error)
-  } finally {
-    pageConfig.removeLoading()
   }
 }
 

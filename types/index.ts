@@ -71,6 +71,14 @@ declare global {
     categoryId?: number | undefined
     keyword?: string | undefined
   }
+  interface IProductRefreshAPI {
+    page: number
+    take: number
+    skip: number
+    sort_field: string
+    sort_direction: string
+    filters: string
+  }
 
   interface IProducts extends IProductId {
     name: string
