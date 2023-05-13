@@ -5,8 +5,6 @@
     :class="classes"
     class="
       text-white
-      bg-green
-      hover:bg-blue-800
       focus:ring-4
       focus:outline-none
       font-medium
@@ -39,6 +37,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  type: {
+    type: String,
+    default: "primary",
+  },
 })
 
 const emits = defineEmits(["onclick"])
@@ -57,12 +59,20 @@ enum TextSizes {
   "lg" = "text-lg",
 }
 
+enum ButtonTypes {
+  "primary" = "bg-green hover:bg-blue-800 text-white",
+  "danger" = "bg-red-500 hover:bg-red-600",
+}
+
 const paddingClasses = computed(() => {
   return ButtonSizes[props.size as keyof typeof ButtonSizes]
 })
 
 const textClass = computed(() => {
   return TextSizes[props.size as keyof typeof ButtonSizes]
+})
+const typeClass = computed(() => {
+  return ButtonTypes[props.type as keyof typeof ButtonTypes]
 })
 const widthClass = computed(() => {
   return props.liquid ? "w-full" : "w-min"
@@ -73,7 +83,7 @@ const roundedClass = computed(() => {
 
 const classes = computed(
   () =>
-    `${paddingClasses.value} ${textClass.value} ${widthClass.value} ${roundedClass.value}`
+    `${paddingClasses.value} ${textClass.value} ${widthClass.value} ${roundedClass.value} ${typeClass.value}`
 )
 
 const onClick = (event: Event) => {

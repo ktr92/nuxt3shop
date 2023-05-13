@@ -41,7 +41,7 @@ export const useShoppingCart = defineStore("cart", {
       this.stateCart = []
       this.setLocalCart(this.stateCart)
     },
-    deleteLocalCart(payload: number) {
+    removeOne(payload: number) {
       // this.getLocalCart()
       this.stateCart.filter(
         (item: ICartProducts) => item.product.product_id !== payload

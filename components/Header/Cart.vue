@@ -1,6 +1,6 @@
 <template>
   <div class="header__button pl-4">
-    <NuxtLink to="/" class="relative">
+    <NuxtLink to="/checkout/cart" class="relative">
       <ShoppingBagIcon class="w-6 h-6 stroke-slate-600" />
       <span class="buttoncount">{{ count }}</span>
     </NuxtLink>
