@@ -107,4 +107,9 @@ declare global {
   interface IProperties {
     manufacturer?: Array<ISelect>
   }
+
+  interface ICartProducts {
+    product: IProducts
+    count: number
+  }
 }

@@ -14,7 +14,8 @@
     <div v-if="productslist?.products">
       <div class="grid grid-cols-4 gap-3">
         <div v-for="product in productslist.products">
-          <ContentProductCard :product="product"> </ContentProductCard>
+          <ContentProductCard :product="product" @addtocart="addToCart">
+          </ContentProductCard>
         </div>
       </div>
     </div>
@@ -107,6 +108,10 @@ const showAll = async () => {
   take = totalCount.value
   skip = 0
   emits("onupdate", updatetParams())
+}
+const useCart = useShoppingCart()
+const addToCart = (product: IProducts) => {
+  useCart.addToCart(product)
 }
 </script>
 

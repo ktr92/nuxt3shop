@@ -75,7 +75,7 @@
             >
             <UIButton
               v-if="product.quantity > 0"
-              @onclick=""
+              @onclick="addToCart(product)"
               size="sm"
               :liquid="false"
               :rounded="true"
@@ -94,10 +94,17 @@ interface ICard {
   product: IProducts
   cardtype?: string
 }
+
+const emits = defineEmits(["addtocart"])
+
 const props = withDefaults(defineProps<ICard>(), {
   cardtype: "",
 })
 const isInline = computed(() => {
   return props.cardtype === "inline"
 })
+
+const addToCart = (product: IProducts) => {
+  emits("addtocart", product)
+}
 </script>

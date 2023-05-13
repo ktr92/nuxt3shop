@@ -17,7 +17,11 @@
         v-click-outside="onClickOutside"
       >
         <div v-for="product in productsList" :key="product.product_id">
-          <ContentProductCard :product="product" cardtype="inline">
+          <ContentProductCard
+            :product="product"
+            cardtype="inline"
+            @addtocart="addToCart"
+          >
           </ContentProductCard>
         </div>
         <UIButton @onclick="gotoSearch" size="lg" :liquid="true">
@@ -115,5 +119,10 @@ const gotoSearch = () => {
   const keyword = keywordQuery.value
   pageConfig.hideLive()
   router.push({ path: "/search", query: { keyword } })
+}
+
+const useCart = useShoppingCart()
+const addToCart = (product: IProducts) => {
+  useCart.addToCart(product)
 }
 </script>
